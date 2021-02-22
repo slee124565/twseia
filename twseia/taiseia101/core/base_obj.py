@@ -42,6 +42,7 @@ class CmdTypeCode(BaseObject):
 
 
 class DeviceTypeCode(BaseObject):
+    """deprecated by SATypeID class"""
     REGISTER = 0x00
     AIR_CONDITIONER = 0x01
     REFRIGERATOR = 0x02

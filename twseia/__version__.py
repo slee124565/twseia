@@ -1,4 +1,4 @@
-__title__ = 'pytwseia'
+__title__ = 'twseia'
 __description__ = """A Python library for smart home accessory device control protocol designed by Taiwan Smart 
 Energy Industry Association (TaiSEIA)."""
 __url__ = 'https://pytwseia.readthedocs.io'
