@@ -1,6 +1,28 @@
 import enum
 
 
+class ValueTypeID(enum.IntEnum):
+    ENUM16 = 0x01
+    ENUM16_BIT = 0x06
+
+    UNIT8 = 0x0a
+    UNIT16 = 0x0b
+    UINT32 = 0x0c
+    UINT64 = 0x0d
+
+    INT8 = 0x0f
+    INT16 = 0x10
+    INT32 = 0x11
+
+    TIME_MD = 0x14
+    TIME_HM = 0x15
+    TIME_MS = 0x16
+    TIME_YMDHMS = 0x17
+    TIME_YMDHM = 0x18
+
+    STR = 0x20
+
+
 class SATypeID(enum.IntEnum):
     # REGISTER = 0x00
     AIR_CONDITIONER = 0x01
@@ -24,3 +46,15 @@ class SATypeID(enum.IntEnum):
     SMART_METER_GATEWAY = 0xE0
     GENERAL_DEVICE = 0xF0
     ERROR = 0xFF
+
+
+class SAServiceID(enum.IntEnum):
+    REGISTER = 0X00
+    READ_DEVICE_CLASS_ID = 0X01
+    READ_DEVICE_PROTOCOL_VER = 0X02
+    RESERVED = 0X03
+    READ_DEVICE_TYPE_ID = 0X04
+    READ_DEVICE_BRAND = 0X05
+    READ_DEVICE_MODEL = 0X06
+    READ_DEVICE_SERVICES = 0X07
+    READ_DEVICE_SERVICES_STATUS = 0X08

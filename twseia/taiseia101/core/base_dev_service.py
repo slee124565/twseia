@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class DataTypeCode(BaseObject):
+    """deprecated by ValueTypeCode"""
     ENUM16 = 0x01
     ENUM16_BIT = 0x06
 

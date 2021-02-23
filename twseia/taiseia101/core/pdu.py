@@ -202,6 +202,7 @@ class ErrorResponse(BaseResponse):
 class DeviceRegisterService(DeviceBaseService):
 
     class ServiceCode(BaseObject):
+        """deprecated by SAServiceID"""
         REGISTER = 0X00
         READ_DEVICE_CLASS_ID = 0X01
         READ_DEVICE_PROTOCOL_VER = 0X02
