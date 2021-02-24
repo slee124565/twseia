@@ -13,5 +13,4 @@ script:
   - python py_tests.py
   - coverage erase
   - coverage run --branch --source twseia -m py_tests
-after_success:
-  coveralls --verbose
+  - coveralls --verbose
