@@ -1,5 +1,5 @@
 from .constants import *
-
+from .packets import CommonPacket
 
 def _create_payload(type_id: int, service_id: int, cmd_id: int, cmd_value: int):
     if type_id is None:
@@ -30,13 +30,12 @@ class SmartApplication:
 
     def register(self):
         """Send a Register request for SA."""
-        _payload = _create_payload(
-            type_id=0x00,
-            service_id=SAServiceID.REGISTER.value,
-            cmd_id=SACmdType.READ.value,
-            cmd_value=0xffff
+        packet = CommonPacket.create_packet(
+            sa_dev_type=SADeviceType.REGISTER,
+            cmd_type=SACmdType.READ,
+            sa_service=SAServiceID.REGISTER,
         )
-        resp = self._request(payload=_payload)
+        resp = self._request(payload=packet.to_pdu())
         return resp
 
     def read_service(self, service_id: int):

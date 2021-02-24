@@ -23,7 +23,7 @@ class ValueTypeID(enum.IntEnum):
     STR = 0x20
 
 
-class SATypeID(enum.IntEnum):
+class SADeviceType(enum.IntEnum):
     REGISTER = 0x00
     AIR_CONDITIONER = 0x01
     REFRIGERATOR = 0x02

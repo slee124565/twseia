@@ -1,3 +1,8 @@
+from .constants import SACmdType
+from .constants import SADeviceType
+from .constants import SAServiceID
+
+
 class CommonPacket:
     _pdu = None
     len = None
@@ -7,6 +12,19 @@ class CommonPacket:
     high_byte_value = None
     low_byte_value = None
     check_sum = None
+
+    @classmethod
+    def create_packet(cls, sa_dev_type: SADeviceType, cmd_type: SACmdType, sa_service: SAServiceID,
+                      value: int = 0xFFFF):
+        _packet = cls()
+        _packet.len = 6
+        _packet.sa_type_id = sa_dev_type.value
+        _packet.cmd_type_id = cmd_type.value
+        _packet.service_id = sa_service.value
+        _bytes = value.to_bytes(2, 'big')
+        _packet.high_byte_value = _bytes[0]
+        _packet.low_byte_value = _bytes[1]
+        return _packet
 
     @classmethod
     def compute_checksum(cls, pdu: list):
@@ -35,8 +53,30 @@ class CommonPacket:
         _packet.check_sum = pdu[5]
         return _packet
 
+    def to_json(self):
+        return {
+            'len': self.len,
+            'sa_type_id': self.sa_type_id,
+            'cmd_type_id': self.cmd_type_id,
+            'service_id': self.service_id,
+            'high_byte_value': self.high_byte_value,
+            'low_byte_value': self.low_byte_value
+        }
+
     def to_pdu(self):
-        # if isinstance(self.len, int) and isinstance(self.sa_type_id, int)
-        _pdu = [self.len, self.sa_type_id, (self.cmd_type_id << 7) | self.service_id, self.high_byte_value,
-                self.low_byte_value]
-        return _pdu.append(self.compute_checksum(_pdu))
+        if not isinstance(self.len, int) or self.cmd_type_id not in [e.value for e in SACmdType] \
+                or not isinstance(self.service_id, int) or not isinstance(self.high_byte_value, int) \
+                or not isinstance(self.low_byte_value, int):
+            raise ValueError(f'{self.to_json()}')
+        self._pdu = [
+            self.len,
+            self.sa_type_id,
+            (self.cmd_type_id << 7) | self.service_id,
+            self.high_byte_value,
+            self.low_byte_value
+        ]
+        self._pdu.append(self.compute_checksum(self._pdu))
+        return self._pdu
+
+
+__all__ = ['CommonPacket']
