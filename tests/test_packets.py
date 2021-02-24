@@ -1,5 +1,5 @@
 import unittest
-from twseia.packets import CommonPacket
+from twseia.common_packet import CommonPacket
 from twseia.constants import SADeviceType
 from twseia.constants import SACmdType
 from twseia.constants import SAServiceID
