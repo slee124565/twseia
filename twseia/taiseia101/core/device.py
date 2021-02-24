@@ -1,9 +1,9 @@
 
-from pdu import *
-
 import json
 import sys
 import logging
+from .pdu import *
+
 logger = logging.getLogger(__name__)
 
 

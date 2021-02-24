@@ -1,6 +1,6 @@
 
-from base_obj import *
-from base_dev_service import *
+from .base_obj import *
+from .base_dev_service import *
 
 import logging
 logger = logging.getLogger(__name__)
@@ -198,7 +198,7 @@ class ErrorResponse(BaseResponse):
 #         #     data['data_hex'] = get_byte_list_hex_str(self.datas)
 #         return data
 #
-#base_dev_service
+# base_dev_service
 class DeviceRegisterService(DeviceBaseService):
 
     class ServiceCode(BaseObject):
@@ -243,6 +243,7 @@ class RegisterResponse(BaseResponse):
             return (byte_value & 0x80) >> 7
 
     class DeviceClassCode(BaseObject):
+        """deprecated by SAClassID"""
         HOME_DEVICE = 0x00
         POWER_DEVICE = 0x01
         ENERGY_STORAGE_DEVICE = 0x02

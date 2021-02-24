@@ -1,2 +1,2 @@
 
-from device import *
+from .device import *

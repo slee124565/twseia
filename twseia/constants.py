@@ -24,7 +24,7 @@ class ValueTypeID(enum.IntEnum):
 
 
 class SATypeID(enum.IntEnum):
-    # REGISTER = 0x00
+    REGISTER = 0x00
     AIR_CONDITIONER = 0x01
     REFRIGERATOR = 0x02
     WATCHING_MACHINE = 0x03
@@ -58,3 +58,15 @@ class SAServiceID(enum.IntEnum):
     READ_DEVICE_MODEL = 0X06
     READ_DEVICE_SERVICES = 0X07
     READ_DEVICE_SERVICES_STATUS = 0X08
+
+
+class SACmdType(enum.IntEnum):
+    READ = 0
+    WRITE = 1
+
+
+class SAClassID(enum.IntEnum):
+    HOME_DEVICE = 0x00
+    POWER_DEVICE = 0x01
+    ENERGY_STORAGE_DEVICE = 0x02
+    SENSOR_DEVICE = 0x03

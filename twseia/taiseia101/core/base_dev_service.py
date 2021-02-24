@@ -1,5 +1,5 @@
 
-from base_obj import *
+from .base_obj import *
 
 import struct
 import logging
