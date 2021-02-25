@@ -1,6 +1,7 @@
 from .constants import SACmdType
 from .constants import SADeviceType
 from .constants import SAServiceID
+from .utils import compute_pdu_checksum
 
 
 class CommonPacket:
@@ -27,19 +28,12 @@ class CommonPacket:
         return _packet
 
     @classmethod
-    def compute_checksum(cls, pdu: list):
-        _checksum = 0
-        for x in pdu:
-            _checksum ^= x
-        return _checksum
-
-    @classmethod
     def from_pdu(cls, pdu: list):
         if not isinstance(pdu, list):
             raise ValueError(f'pdu not list, {pdu}')
         if pdu[0] != len(pdu) or len(pdu) != 6:
             raise ValueError(f'pdu len invalid, {pdu}')
-        if pdu[-1] != cls.compute_checksum(pdu=pdu[:-1]):
+        if pdu[-1] != compute_pdu_checksum(pdu=pdu[:-1]):
             raise ValueError(f'pdu checksum invalid, {pdu}')
 
         _packet = cls()
@@ -75,7 +69,7 @@ class CommonPacket:
             self.high_byte_value,
             self.low_byte_value
         ]
-        self._pdu.append(self.compute_checksum(self._pdu))
+        self._pdu.append(compute_pdu_checksum(self._pdu))
         return self._pdu
 
 
