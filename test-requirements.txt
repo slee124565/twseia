@@ -1,4 +1,4 @@
-# flake8
+flake8
 # nose
 coverage
 # sphinx_rtd_theme

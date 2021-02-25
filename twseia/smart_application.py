@@ -1,22 +1,7 @@
-from .constants import *
+from .constants import SACmdType
+from .constants import SAServiceID
+from .constants import SADeviceType
 from .common_packet import CommonPacket
-
-
-def _create_payload(type_id: int, service_id: int, cmd_id: int, cmd_value: int):
-    if type_id is None:
-        raise Exception('No SA Type ID assigned. Execute [register] first.')
-
-    _payload = [6,
-                type_id,
-                (cmd_id << 7) | service_id,
-                ] + list(cmd_value.to_bytes(2, 'big')) + [0]
-    for x in _payload[:-1]:
-        _payload[-1] ^= x
-    return _payload
-
-
-def _parse_payload(payload: list):
-    raise NotImplementedError
 
 
 class SmartApplication:
@@ -62,4 +47,4 @@ class SmartApplication:
         return resp
 
 
-__all__ = ['SmartApplication', '_create_payload']
+__all__ = ['SmartApplication']
