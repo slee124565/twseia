@@ -1,30 +1,9 @@
 import enum
 
 
-class ValueTypeID(enum.IntEnum):
-    ENUM16 = 0x01
-    ENUM16_BIT = 0x06
-
-    UNIT8 = 0x0a
-    UNIT16 = 0x0b
-    UINT32 = 0x0c
-    UINT64 = 0x0d
-
-    INT8 = 0x0f
-    INT16 = 0x10
-    INT32 = 0x11
-
-    TIME_MD = 0x14
-    TIME_HM = 0x15
-    TIME_MS = 0x16
-    TIME_YMDHMS = 0x17
-    TIME_YMDHM = 0x18
-
-    STR = 0x20
-
-
 class SADeviceType(enum.IntEnum):
-    REGISTER = 0x00
+    """TAISEIA Spec. Constant Table_10"""
+    # REGISTER = 0x00
     AIR_CONDITIONER = 0x01
     REFRIGERATOR = 0x02
     WATCHING_MACHINE = 0x03
@@ -45,11 +24,11 @@ class SADeviceType(enum.IntEnum):
     FAN_SAMPO = 0x13
     SMART_METER_GATEWAY = 0xE0
     GENERAL_DEVICE = 0xF0
-    ERROR = 0xFF
 
 
-class SAServiceID(enum.IntEnum):
-    REGISTER = 0X00
+class SARegisterServiceID(enum.IntEnum):
+    """TAISEIA Spec. Constant Table_14"""
+    READ_ALL = 0X00
     READ_DEVICE_CLASS_ID = 0X01
     READ_DEVICE_PROTOCOL_VER = 0X02
     RESERVED = 0X03
@@ -60,9 +39,9 @@ class SAServiceID(enum.IntEnum):
     READ_DEVICE_SERVICES_STATUS = 0X08
 
 
-class SACmdType(enum.IntEnum):
-    READ = 0
-    WRITE = 1
+class SAServiceIOMode(enum.IntEnum):
+    READ = 0x00
+    READ_WRITE = 0x01
 
 
 class SAClassID(enum.IntEnum):
@@ -70,3 +49,8 @@ class SAClassID(enum.IntEnum):
     POWER_DEVICE = 0x01
     ENERGY_STORAGE_DEVICE = 0x02
     SENSOR_DEVICE = 0x03
+
+
+class SAPacketDataLenType(enum.IntEnum):
+    FIXED_LEN = 0
+    DYNAMIC_LEN = 1

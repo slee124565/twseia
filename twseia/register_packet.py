@@ -1,18 +1,40 @@
-import enum
+from .utils import compute_pdu_checksum
 from .constants import SAClassID
 from .constants import SADeviceType
-from .utils import compute_pdu_checksum
+from .constants import SAPacketDataLenType
+from .constants import SARegisterServiceID
 
 
-class RegisterPacketType(enum.IntEnum):
-    GENERAL = 0
-    MULTIPLE = 1
+class GeneralServiceUnit:
+    rw_mode_id = None
+    service_id = None
+    data_bytes = None
+
+    @classmethod
+    def from_pdu(cls, pdu: list):
+        service = cls()
+        _pdu = list(pdu)
+        service.rw_mode_id = _pdu[0] >> 7
+        service.service_id = _pdu[0] & 0x7F
+        service.data_bytes = _pdu[1:]
 
 
-class RegisterPacket:
+class MultiByteServiceUnit(GeneralServiceUnit):
+    data_type_id = None
+
+    @classmethod
+    def from_pdu(cls, pdu: list):
+        _pdu = list(pdu)
+        service = super(MultiByteServiceUnit, cls).from_pdu(pdu=_pdu)
+        service.data_type_id = _pdu[1]
+        service.data_bytes = _pdu[2:]
+        return service
+
+
+class _RegisterPacket:
     _pdu = None
     len = None
-    packet_type = None
+    service_data_type = None
     sa_class = None
     major_ver = None  # protocol major version
     minor_ver = None  # protocol minor version
@@ -20,7 +42,7 @@ class RegisterPacket:
     sa_type = None
     brand = None
     model = None
-    services = {}
+    services = []
     check_sum = None
 
     @classmethod
@@ -34,9 +56,9 @@ class RegisterPacket:
         packet = cls()
         packet._pdu = pdu
         packet.len = pdu[0]
-        if pdu[1] != 0x00:
+        if pdu[1] != SARegisterServiceID.READ_ALL:
             raise ValueError(f'pdu[1] value should be fixed 0x00, {pdu[1]}')
-        packet.packet_type = RegisterPacketType(pdu[2] >> 7)
+        packet.service_data_type = SAServiceDataType(pdu[2] >> 7)
         packet.dev_class = SAClassID(pdu[2] & 0x0f)
         packet.major_ver = pdu[3]
         packet.minor_ver = pdu[4]
@@ -48,4 +70,8 @@ class RegisterPacket:
         n_zero = pdu[n_start:].index(0)
         packet.model = bytearray(pdu[n_start:n_start+n_zero]).decode("utf-8")
         n_start = n_start+n_zero+1
-
+        if packet.service_data_type == SAPacketDataLenType.FIXED_LEN:
+            pass
+        else:  # SAServiceUnitType.MULTI_BYTE
+            pass
+        return packet

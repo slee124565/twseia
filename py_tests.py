@@ -1,6 +1,6 @@
 import sys
 import unittest
-from twseia.taiseia101 import *
+# from twseia.taiseia101 import *
 
 if __name__ == '__main__':
     tests = unittest.TestLoader().discover('./tests', pattern='test*.py')
