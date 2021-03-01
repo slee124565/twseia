@@ -194,7 +194,7 @@ class AirConditioner(_DeviceBase, SADevice):
         n = 0
         while n < len(pdu):
             basic_service = SABasicServiceFactory.convert_type_service_from_pdu(
-                pdu=pdu,
+                pdu=pdu[n:n+3],
                 is_fixed_len_pdu=is_fixed_len_pdu
             )
             dev_service = cls.convert_dev_specific_service(
