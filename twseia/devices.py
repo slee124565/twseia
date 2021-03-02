@@ -1,5 +1,5 @@
 import enum
-from .services import UInt8Service, SADataValueType
+from .services import UInt8Service, SADataValueType, Int8Service, UInt16Service, HMService, Enum16BitService, MDService
 from .services import ServiceBase
 from .services import Enum16Service
 
@@ -90,105 +90,105 @@ class AirConditioner(_DeviceBase, SADevice):
         elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_CFG_RW:
             return UInt8Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_R:
-            raise NotImplementedError
+            return Int8Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_TIMER_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FUZZY_TEMPERATURE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.AIR_CLEAN_MODE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_ON_RW:
-            raise NotImplementedError
+            return HMService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_OFF_RW:
-            raise NotImplementedError
+            return HMService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.TIMER_ON_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SYS_TIME_RW:
-            raise NotImplementedError
+            return HMService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_LEVEL_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_LEVEL_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.DEHUMIDIFIER_CFG_RW:
-            raise NotImplementedError
+            return UInt8Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.HUMIDITY_R:
-            raise NotImplementedError
+            return UInt8Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SYS_CHECK_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.AIR_DETECT_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.DEV_MILDEW_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SELF_CLEAN_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.MOTION_DETECT_MODE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FAST_OP_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.POWER_SAVING_OP_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.POWER_LIMIT_OP_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.REMOTE_CTRL_LOCK_RW:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SAA_CTRL_AUDIO_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.BODY_DISPLAY_MODE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.MOISTURIZE_MODE_RW:
-            raise NotImplementedError
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_TEMPERATURE_R:
-            raise NotImplementedError
+            return Int8Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.INDOOR_UNIT_WATT_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_WATT_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_INSTANT_WATT_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.TOTAL_WATT_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.DISPLAY_ERR_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_1_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_2_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_3_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_4_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_5_R:
-            raise NotImplementedError
+            return Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.MAINTENANCE_ACCU_OP_HOUR_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.FILTER_ACCU_OP_HOUR_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SYS_YEAR_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.SYS_MONTH_DAY_RW:
-            raise NotImplementedError
+            return MDService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.MONTHLY_WATT_R:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_2_RW:
-            raise NotImplementedError
+            return UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         else:
-            raise NotImplementedError
+            raise Exception(f'Unknown device {cls.__name__} service_id {_service.service_id}')
 
     @classmethod
     def convert_services_from_pdu(cls, pdu: list, is_fixed_len_pdu: bool) -> list:

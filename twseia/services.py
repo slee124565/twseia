@@ -29,6 +29,23 @@ class SADataValueType(enum.IntEnum):
         else:
             raise NotImplementedError
 
+    @classmethod
+    def query_data_type_bytes_len(cls, data_type_id: int):
+        if data_type_id in [0x01, 0x06, 0x0A, 0x0F, 0x14, 0x15, 0x16]:
+            return 2
+        elif data_type_id in [0x0B, 0x010]:
+            return 4
+        elif data_type_id in [0x18]:
+            return 5
+        elif data_type_id in [0x17]:
+            return 6
+        elif data_type_id in [0x0C, 0x11]:
+            return 8
+        elif data_type_id in [0x0D]:
+            return 16
+        else:
+            raise ValueError(f'data_type_id invalid, {data_type_id}')
+
 
 class ServiceBase:
     io_mode_id = None
@@ -102,59 +119,149 @@ class Enum16BitService(ServiceBase):
 class UInt8Service(ServiceBase):
     ID = 0x0A
 
-    @property
-    def max(self):
-        raise NotImplementedError
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-1:], 'big')
 
-    @property
-    def min(self):
-        raise NotImplementedError
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-2:-1], 'big')
 
-
-class UInt16ServiceInfo(ServiceBase):
-    CODE = 0x0B
-
-    @property
-    def max(self):
-        raise NotImplementedError
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-1:], 'big')
 
 
-def query_data_type_bytes_len(data_type_id: int):
-    if data_type_id in [0x01, 0x06, 0x0A, 0x0F, 0x14, 0x15, 0x16]:
-        return 2
-    elif data_type_id in [0x0B, 0x010]:
-        return 4
-    elif data_type_id in [0x18]:
-        return 5
-    elif data_type_id in [0x17]:
-        return 6
-    elif data_type_id in [0x0C, 0x11]:
-        return 8
-    elif data_type_id in [0x0D]:
-        return 16
-    else:
-        raise ValueError(f'data_type_id invalid, {data_type_id}')
+class UInt16Service(ServiceBase):
+    ID = 0x0B
+
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-2:], 'big')
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-4:-2], 'big')
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-2:], 'big')
 
 
-class ServiceInfoFactory:
-    @classmethod
-    def convert_to_general_service_info(cls, pdu: list):
-        if not isinstance(pdu, list):
-            raise ValueError
-        if len(pdu) != 3:
-            raise ValueError
-        # io_mode_id = pdu[0] >> 7
-        # service_id = pdu[0] & 0x7F
-        # # data_bytes = pdu[1:]
-        # if service_id == SADataValueType.ENUM16:
-        #     return Enum16ServiceInfo.from_general_pdu(pdu=pdu)
-        # elif service_id == SADataValueType.ENUM16_BIT:
-        #     return Enum16BitServiceInfo.from_general_pdu(pdu=pdu)
-        return None
+class UInt32Service(ServiceBase):
+    ID = 0x0C
 
-    @classmethod
-    def convert_to_data_type_service_(cls, pdu: list):
-        raise NotImplementedError
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-4:], 'big')
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-8:-4], 'big')
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-4:], 'big')
+
+
+class UInt64Service(ServiceBase):
+    ID = 0x0D
+
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-8:], 'big')
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-16:-8], 'big')
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-8:], 'big')
+
+
+class Int8Service(ServiceBase):
+    ID = 0x0F
+
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-1:], 'big', signed=True)
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-2:-1], 'big', signed=True)
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-1:], 'big', signed=True)
+
+
+class Int16Service(ServiceBase):
+    ID = 0x10
+
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-4:-2], 'big', signed=True)
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
+
+
+class Int32Service(ServiceBase):
+    ID = 0x11
+
+    def read_value(self):
+        return int.from_bytes(self.data_bytes[-4:], 'big', signed=True)
+
+    def read_max(self):
+        return int.from_bytes(self.data_bytes[-4:-2], 'big', signed=True)
+
+    def read_min(self):
+        return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
+
+
+class MDService(ServiceBase):
+    ID = 0x14
+
+    def read_value(self):
+        return (int.from_bytes(self.data_bytes[-2:1], 'big'),
+                int.from_bytes(self.data_bytes[-1:], 'big'))
+
+    def read_month(self):
+        return self.read_value()[0]
+
+    def read_day(self):
+        return self.read_value()[1]
+
+
+class HMService(ServiceBase):
+    ID = 0x15
+
+    def read_value(self):
+        return (int.from_bytes(self.data_bytes[-2:1], 'big'),
+                int.from_bytes(self.data_bytes[-1:], 'big'))
+
+    def read_hour(self):
+        return self.read_value()[0]
+
+    def read_minute(self):
+        return self.read_value()[1]
+
+
+class MSService(ServiceBase):
+    ID = 0x16
+
+    def read_value(self):
+        return (int.from_bytes(self.data_bytes[-2:1], 'big'),
+                int.from_bytes(self.data_bytes[-1:], 'big'))
+
+    def read_minute(self):
+        return self.read_value()[0]
+
+    def read_second(self):
+        return self.read_value()[1]
+
+
+class YMDHMSService(ServiceBase):
+    ID = 0x17
+    pass
+
+
+class YMDHMService(ServiceBase):
+    ID = 0x18
+    pass
+
+
+class StringService(ServiceBase):
+    ID = 0x20
+    pass
 
 
 __all__ = [
@@ -163,4 +270,13 @@ __all__ = [
     'Enum16Service',
     'Enum16BitService',
     'UInt8Service',
+    'UInt16Service',
+    'UInt32Service',
+    'UInt64Service',
+    'Int8Service',
+    'Int16Service',
+    'Int32Service',
+    'MDService',
+    'HMService',
+    'MSService'
 ]
