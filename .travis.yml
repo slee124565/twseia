@@ -7,10 +7,6 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
-  - pip install coveralls
 # command to run tests
 script:
-  - python py_tests.py
-  - coverage erase
-  - coverage run --branch --source twseia -m py_tests
-  - coveralls --verbose
+  - nosetests --with-coverage --cover-erase --cover-package=twseia

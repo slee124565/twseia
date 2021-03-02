@@ -152,11 +152,11 @@ class ServiceInfoFactory:
 
 class SABasicServiceFactory:
     @classmethod
-    def convert_type_service_from_pdu(cls, pdu: list, is_fixed_len_pdu: True):
+    def convert_basic_service_from_pdu(cls, pdu: list, is_fixed_len_pdu: True):
         if is_fixed_len_pdu:
-            type_service = ServiceBase.from_fixed_len_pdu(pdu=pdu)
+            return ServiceBase.from_fixed_len_pdu(pdu=pdu)
         else:
-            type_service = ServiceBase.from_dynamic_len_pdu(pdu=pdu)
+            return ServiceBase.from_dynamic_len_pdu(pdu=pdu)
 
 
 __all__ = [
