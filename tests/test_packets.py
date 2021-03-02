@@ -1,5 +1,3 @@
-import sys
-sys.path.append('.')
 import unittest
 from tests.sample_pdus import *
 from twseia.constants import SARegisterServiceID
@@ -9,7 +7,7 @@ from twseia.packets import SAInfoRegisterPacket
 # from twseia.constants import SAServiceIOMode
 
 
-class TestPackets(unittest.TestCase):
+class TestSAInfoRegisterPackets(unittest.TestCase):
 
     def test_sa_info_request_packet(self):
         pdu = [6, 0, 0, 255, 255, 6]  # Register Request Packet

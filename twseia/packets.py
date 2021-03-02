@@ -1,8 +1,9 @@
-from .constants import SAServiceIOMode
+from .constants import SAServiceIOMode, SAClassID
 from .constants import SADeviceType
 from .constants import SARegisterServiceID
 from .constants import SAPacketDataLenType
 from .utils import compute_pdu_checksum
+from .services import SADataValueType
 from .devices import AirConditioner
 
 
@@ -137,20 +138,35 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
         packet.model = bytearray(_pdu[n_start:n_start + n_zero]).decode("utf-8")
         n_start = n_start + n_zero + 1
         n = n_start
-        # todo: create list of ServiceInfo according to Device Spec.
-        if packet.data_type_id == SAPacketDataLenType.FIXED_LEN:
-            if packet.type_id == SADeviceType.AIR_CONDITIONER:
-                packet.services = AirConditioner.convert_services_from_pdu(
-                    pdu=_pdu[n:-1],
-                    is_fixed_len_pdu=True if packet.data_type_id == SAPacketDataLenType.FIXED_LEN else False
-                )
-            elif packet.type_id == SADeviceType.DEHUMIDIFIER:
-                raise NotImplementedError
+        packet.services = []
+        is_fixed_len_pdu = True if packet.data_type_id == SAPacketDataLenType.FIXED_LEN else False
+        while n < len(pdu)-1:
+            if is_fixed_len_pdu:
+                _len = 3
             else:
-                raise NotImplementedError
-        else:
-            raise NotImplementedError
+                data_type_id = _pdu[n + 1]
+                _len = SADataValueType.read_data_type_len_by_id(data_type_id=data_type_id)
+
+            service = AirConditioner.convert_dev_specific_service(
+                pdu=pdu[n:n + _len],
+                is_fixed_len_pdu=is_fixed_len_pdu
+            )
+            packet.services.append(service)
+            n += _len
         return packet
+
+    def to_json(self):
+        return {
+            'class_id': self.class_id,
+            'class_name': SAClassID(self.class_id).name,
+            'type_id': self.type_id,
+            'type_name': SADeviceType(self.type_id).name,
+            'version': (self.major_ver, self.minor_ver),
+            'fragment_offset': self.fragment_offset,
+            'brand': self.brand,
+            'model': self.model,
+            'services': [service.to_json() for service in self.services]
+        }
 
 
 class SAInfoResponsePacket(_BasePacket):

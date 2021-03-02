@@ -1,4 +1,5 @@
 import enum
+from .constants import SAServiceIOMode
 
 
 class SADataValueType(enum.IntEnum):
@@ -52,6 +53,7 @@ class ServiceBase:
     service_id = None
     data_type_id = None
     data_bytes = None
+    name = None
 
     @classmethod
     def from_fixed_len_pdu(cls, pdu: list):
@@ -79,6 +81,14 @@ class ServiceBase:
         service.data_type_id = _pdu[1]
         service.data_bytes = _pdu[2:]
         return service
+
+    def to_json(self):
+        return {
+            'io_mode_id': self.io_mode_id,
+            'service_id': self.service_id,
+            'data_bytes': self.data_bytes,
+            'name': self.name
+        }
 
 
 class SAService:
@@ -114,6 +124,9 @@ class Enum16BitService(ServiceBase):
         elif 8 <= bit_index <= 15:
             mask = 1 << (bit_index-8)
             return (self.data_bytes[1] & mask) >> (bit_index-8)
+
+    def read_value(self):
+        return '0b{:016b}'.format(int.from_bytes(self.data_bytes, 'big'))
 
 
 class UInt8Service(ServiceBase):
