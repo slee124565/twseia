@@ -22,6 +22,13 @@ class SADataValueType(enum.IntEnum):
 
     STR = 0x20
 
+    @classmethod
+    def read_data_type_len_by_id(cls, data_type_id: int) -> int:
+        if data_type_id == cls.ENUM16:
+            return 2
+        else:
+            raise NotImplementedError
+
 
 class ServiceBase:
     io_mode_id = None
@@ -150,17 +157,8 @@ class ServiceInfoFactory:
         raise NotImplementedError
 
 
-class SABasicServiceFactory:
-    @classmethod
-    def convert_type_service_from_pdu(cls, pdu: list, is_fixed_len_pdu: True):
-        if is_fixed_len_pdu:
-            type_service = ServiceBase.from_fixed_len_pdu(pdu=pdu)
-        else:
-            type_service = ServiceBase.from_dynamic_len_pdu(pdu=pdu)
-
-
 __all__ = [
-    'SABasicServiceFactory',
+    'SADataValueType',
     'ServiceBase',
     'Enum16Service',
     'Enum16BitService',
