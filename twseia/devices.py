@@ -1,12 +1,12 @@
 import enum
-from .services import SABasicServiceFactory
+from .services import UInt8Service, SADataValueType
 from .services import ServiceBase
 from .services import Enum16Service
 
 
 class _DeviceBase:
     @classmethod
-    def convert_dev_specific_service(cls, basic_service: ServiceBase) -> ServiceBase:
+    def convert_dev_specific_service(cls, pud: list, is_fixed_len_pdu: bool) -> ServiceBase:
         raise NotImplementedError
 
 
@@ -75,112 +75,117 @@ class AirConditionerServiceIDEnum(enum.IntEnum):
 
 class AirConditioner(_DeviceBase, SADevice):
     @classmethod
-    def convert_dev_specific_service(cls, basic_service: ServiceBase) -> ServiceBase:
-        if basic_service.service_id == AirConditionerServiceIDEnum.POWER_RW:
-            return Enum16Service.from_service(service=basic_service)
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OP_MODE_RW:
-            return Enum16Service.from_service(service=basic_service)
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAN_LEVEL_RW:
+    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> ServiceBase:
+        assert (isinstance(pdu, list) and len(pdu) == 3)
+        _pdu = list(pdu)
+        if not is_fixed_len_pdu:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_CFG_RW:
+        _service = ServiceBase.from_fixed_len_pdu(pdu=_pdu)
+        if _service.service_id == AirConditionerServiceIDEnum.POWER_RW:
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == AirConditionerServiceIDEnum.OP_MODE_RW:
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == AirConditionerServiceIDEnum.FAN_LEVEL_RW:
+            return Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_CFG_RW:
+            return UInt8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_TIMER_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_TIMER_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FUZZY_TEMPERATURE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FUZZY_TEMPERATURE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.AIR_CLEAN_MODE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.AIR_CLEAN_MODE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_ON_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.CLOCK_ON_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_OFF_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.CLOCK_OFF_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_ON_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TIMER_ON_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.SYS_TIME_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SYS_TIME_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_LEVEL_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_LEVEL_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAN_SWING_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_LEVEL_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAN_SWING_LEVEL_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.DEHUMIDIFIER_CFG_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.DEHUMIDIFIER_CFG_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.HUMIDITY_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.HUMIDITY_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.SYS_CHECK_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SYS_CHECK_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.AIR_DETECT_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.AIR_DETECT_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.DEV_MILDEW_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.DEV_MILDEW_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.SELF_CLEAN_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SELF_CLEAN_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.MOTION_DETECT_MODE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.MOTION_DETECT_MODE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FAST_OP_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FAST_OP_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.POWER_SAVING_OP_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.POWER_SAVING_OP_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.POWER_LIMIT_OP_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.POWER_LIMIT_OP_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.REMOTE_CTRL_LOCK_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.REMOTE_CTRL_LOCK_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.SAA_CTRL_AUDIO_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SAA_CTRL_AUDIO_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.BODY_DISPLAY_MODE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.BODY_DISPLAY_MODE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.MOISTURIZE_MODE_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.MOISTURIZE_MODE_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_TEMPERATURE_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_TEMPERATURE_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.INDOOR_UNIT_WATT_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.INDOOR_UNIT_WATT_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_WATT_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_WATT_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_INSTANT_WATT_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_INSTANT_WATT_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.TOTAL_WATT_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TOTAL_WATT_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.DISPLAY_ERR_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.DISPLAY_ERR_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_1_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_1_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_2_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_2_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_3_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_3_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_4_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_4_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_5_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_5_R:
+        elif _service.service_id == AirConditionerServiceIDEnum.MAINTENANCE_ACCU_OP_HOUR_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.MAINTENANCE_ACCU_OP_HOUR_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.FILTER_ACCU_OP_HOUR_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.FILTER_ACCU_OP_HOUR_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.SYS_YEAR_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SYS_YEAR_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.SYS_MONTH_DAY_RW:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.SYS_MONTH_DAY_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.MONTHLY_WATT_R:
             raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.MONTHLY_WATT_R:
-            raise NotImplementedError
-        elif basic_service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_2_RW:
+        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_2_RW:
             raise NotImplementedError
         else:
             raise NotImplementedError
@@ -193,25 +198,16 @@ class AirConditioner(_DeviceBase, SADevice):
         services = []
         n = 0
         while n < len(pdu):
-            basic_service = SABasicServiceFactory.convert_basic_service_from_pdu(
-                pdu=pdu[n:n+3],
+            if is_fixed_len_pdu:
+                _len = 3
+            else:
+                data_type_id = _pdu[n+1]
+                _len = SADataValueType.read_data_type_len_by_id(data_type_id=data_type_id)
+
+            service = cls.convert_dev_specific_service(
+                pdu=pdu[n:n + _len],
                 is_fixed_len_pdu=is_fixed_len_pdu
             )
-            dev_service = cls.convert_dev_specific_service(
-                basic_service=basic_service
-            )
-            services.append(dev_service)
-            n += 3
+            services.append(service)
+            n += _len
         return services
-
-
-# class Dehumidifier(_DeviceBase, SADevice):
-#     @classmethod
-#     def convert_services_from_pdu(cls, pdu: list, is_fixed_len_pdu: int) -> list:
-#         if not isinstance(pdu, list):
-#             raise ValueError(f'pdu type invalid, {pdu}')
-#         _pdu = list(pdu)
-#         if is_fixed_len_pdu == SAPacketDataLenType.FIXED_LEN:
-#             raise NotImplementedError
-#         else:
-#             raise NotImplementedError
