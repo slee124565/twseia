@@ -1,5 +1,4 @@
 import enum
-from .constants import SAServiceIOMode
 
 
 class SADataValueType(enum.IntEnum):
@@ -7,7 +6,7 @@ class SADataValueType(enum.IntEnum):
     ENUM16_BIT = 0x06
 
     UNIT8 = 0x0a
-    UNIT16 = 0x0b
+    UINT16 = 0x0b
     UINT32 = 0x0c
     UINT64 = 0x0d
 
@@ -23,32 +22,8 @@ class SADataValueType(enum.IntEnum):
 
     STR = 0x20
 
-    @classmethod
-    def read_data_type_len_by_id(cls, data_type_id: int) -> int:
-        if data_type_id == cls.ENUM16:
-            return 2
-        else:
-            raise NotImplementedError
 
-    @classmethod
-    def query_data_type_bytes_len(cls, data_type_id: int):
-        if data_type_id in [0x01, 0x06, 0x0A, 0x0F, 0x14, 0x15, 0x16]:
-            return 2
-        elif data_type_id in [0x0B, 0x010]:
-            return 4
-        elif data_type_id in [0x18]:
-            return 5
-        elif data_type_id in [0x17]:
-            return 6
-        elif data_type_id in [0x0C, 0x11]:
-            return 8
-        elif data_type_id in [0x0D]:
-            return 16
-        else:
-            raise ValueError(f'data_type_id invalid, {data_type_id}')
-
-
-class ServiceBase:
+class SAServiceBase:
     io_mode_id = None
     service_id = None
     data_type_id = None
@@ -93,27 +68,18 @@ class ServiceBase:
 
 class SAService:
     @classmethod
-    def from_service(cls, service: ServiceBase) -> ServiceBase:
+    def from_service(cls, service: SAServiceBase) -> SAServiceBase:
         raise NotImplementedError
 
 
-class Enum16Service(ServiceBase, SAService):
+class Enum16Service(SAServiceBase):
     ID = 0x01
-
-    @classmethod
-    def from_service(cls, service: ServiceBase) -> ServiceBase:
-        type_service = cls()
-        type_service.io_mode_id = service.io_mode_id
-        type_service.service_id = service.service_id
-        type_service.data_type_id = service.data_type_id
-        type_service.data_bytes = list(service.data_bytes)
-        return type_service
 
     def read_value(self):
         return int.from_bytes(self.data_bytes[-2:], 'big')
 
 
-class Enum16BitService(ServiceBase):
+class Enum16BitService(SAServiceBase):
     ID = 0x06
 
     def read_bit(self, bit_index: int) -> int:
@@ -122,14 +88,14 @@ class Enum16BitService(ServiceBase):
             mask = 1 << bit_index
             return (self.data_bytes[0] & mask) >> bit_index
         elif 8 <= bit_index <= 15:
-            mask = 1 << (bit_index-8)
-            return (self.data_bytes[1] & mask) >> (bit_index-8)
+            mask = 1 << (bit_index - 8)
+            return (self.data_bytes[1] & mask) >> (bit_index - 8)
 
     def read_value(self):
         return '0b{:016b}'.format(int.from_bytes(self.data_bytes, 'big'))
 
 
-class UInt8Service(ServiceBase):
+class UInt8Service(SAServiceBase):
     ID = 0x0A
 
     def read_value(self):
@@ -142,7 +108,7 @@ class UInt8Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-1:], 'big')
 
 
-class UInt16Service(ServiceBase):
+class UInt16Service(SAServiceBase):
     ID = 0x0B
 
     def read_value(self):
@@ -155,7 +121,7 @@ class UInt16Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-2:], 'big')
 
 
-class UInt32Service(ServiceBase):
+class UInt32Service(SAServiceBase):
     ID = 0x0C
 
     def read_value(self):
@@ -168,7 +134,7 @@ class UInt32Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-4:], 'big')
 
 
-class UInt64Service(ServiceBase):
+class UInt64Service(SAServiceBase):
     ID = 0x0D
 
     def read_value(self):
@@ -181,7 +147,7 @@ class UInt64Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-8:], 'big')
 
 
-class Int8Service(ServiceBase):
+class Int8Service(SAServiceBase):
     ID = 0x0F
 
     def read_value(self):
@@ -194,7 +160,7 @@ class Int8Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-1:], 'big', signed=True)
 
 
-class Int16Service(ServiceBase):
+class Int16Service(SAServiceBase):
     ID = 0x10
 
     def read_value(self):
@@ -207,7 +173,7 @@ class Int16Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
 
 
-class Int32Service(ServiceBase):
+class Int32Service(SAServiceBase):
     ID = 0x11
 
     def read_value(self):
@@ -220,7 +186,7 @@ class Int32Service(ServiceBase):
         return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
 
 
-class MDService(ServiceBase):
+class MDService(SAServiceBase):
     ID = 0x14
 
     def read_value(self):
@@ -234,7 +200,7 @@ class MDService(ServiceBase):
         return self.read_value()[1]
 
 
-class HMService(ServiceBase):
+class HMService(SAServiceBase):
     ID = 0x15
 
     def read_value(self):
@@ -248,7 +214,7 @@ class HMService(ServiceBase):
         return self.read_value()[1]
 
 
-class MSService(ServiceBase):
+class MSService(SAServiceBase):
     ID = 0x16
 
     def read_value(self):
@@ -262,24 +228,58 @@ class MSService(ServiceBase):
         return self.read_value()[1]
 
 
-class YMDHMSService(ServiceBase):
+class YMDHMSService(SAServiceBase):
     ID = 0x17
-    pass
+
+    def read_value(self):
+        raise NotImplementedError
 
 
-class YMDHMService(ServiceBase):
+class YMDHMService(SAServiceBase):
     ID = 0x18
-    pass
+
+    def read_value(self):
+        raise NotImplementedError
 
 
-class StringService(ServiceBase):
+class StringService(SAServiceBase):
     ID = 0x20
-    pass
+
+    def read_value(self):
+        raise NotImplementedError
+
+
+def query_sa_data_type_dynamic_len(data_type_id: int):
+    if data_type_id in [SADataValueType.ENUM16,
+                        SADataValueType.ENUM16_BIT,
+                        SADataValueType.UNIT8,
+                        SADataValueType.INT8,
+                        SADataValueType.TIME_MD,
+                        SADataValueType.TIME_HM,
+                        SADataValueType.TIME_MS]:
+        return 2
+    elif data_type_id in [SADataValueType.UINT16,
+                          SADataValueType.INT16]:
+        return 4
+    elif data_type_id in [SADataValueType.TIME_YMDHM]:
+        return 5
+    elif data_type_id in [SADataValueType.TIME_YMDHMS]:
+        return 6
+    elif data_type_id in [SADataValueType.UINT32,
+                          SADataValueType.INT32]:
+        return 8
+    elif data_type_id in [SADataValueType.UINT64]:
+        return 16
+    elif data_type_id in [SADataValueType.STR]:
+        return -1
+    else:
+        raise ValueError(f'data_type_id invalid, {data_type_id}')
 
 
 __all__ = [
+    'query_sa_data_type_dynamic_len',
     'SADataValueType',
-    'ServiceBase',
+    'SAServiceBase',
     'Enum16Service',
     'Enum16BitService',
     'UInt8Service',

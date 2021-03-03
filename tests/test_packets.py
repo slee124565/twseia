@@ -1,22 +1,32 @@
 import unittest
 from tests.sample_pdus import *
-from twseia.constants import SARegisterServiceID
-from twseia.packets import SAInfoRequestPacket
-from twseia.packets import SAInfoRegisterPacket
-# from twseia.constants import SADeviceType
-# from twseia.constants import SAServiceIOMode
+import twseia
 
 
 class TestSAInfoRegisterPackets(unittest.TestCase):
 
     def test_sa_info_request_packet(self):
         pdu = [6, 0, 0, 255, 255, 6]  # Register Request Packet
-        packet = SAInfoRequestPacket.create(sa_info_type=SARegisterServiceID.READ_ALL)
+        packet = twseia.SAInfoRequestPacket.create(
+            sa_info_type=twseia.SARegisterServiceID.READ_ALL
+        )
         self.assertEqual(packet.to_pdu(), pdu)
 
     def test_sa_info_register_packet(self):
         pdu = kHITACHI_AC_RAD_50NK_REGISTER_PDU
-        packet = SAInfoRegisterPacket.from_pdu(pdu=pdu)
+        packet = twseia.SAInfoRegisterPacket.from_pdu(pdu=pdu)
+        self.assertEqual(packet.type_id, twseia.SADeviceType.AIR_CONDITIONER)
+        self.assertEqual(packet.class_id, twseia.SAClassID.HOME_DEVICE)
+        self.assertEqual(packet.data_type_id, twseia.SAPacketDataLenType.FIXED_LEN)
+        self.assertEqual(packet.major_ver, 4)
+        self.assertEqual(packet.minor_ver, 0)
+        self.assertEqual(packet.brand, 'HITACHI')
+        self.assertEqual(packet.model, 'RAD-50NK')
+        self.assertEqual(len(packet.services), 18)
+        for service in packet.services:
+            self.assertTrue(isinstance(service, twseia.SAServiceBase))
+            self.assertTrue(twseia.AirConditionerServiceIDEnum(service.service_id).name,
+                            f'service_id {service.service_id}')
         self.assertTrue(packet)
 
 

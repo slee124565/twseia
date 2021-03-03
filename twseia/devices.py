@@ -1,13 +1,21 @@
 import enum
-from .services import UInt8Service, SADataValueType, Int8Service, UInt16Service, HMService, Enum16BitService, MDService
-from .services import ServiceBase
+import logging
+from .services import UInt8Service
+from .services import Int8Service
+from .services import UInt16Service
+from .services import HMService
+from .services import Enum16BitService
+from .services import MDService
+from .services import SAServiceBase
 from .services import Enum16Service
+
+logger = logging.getLogger(__name__)
 
 
 class SADevice:
 
     @classmethod
-    def convert_dev_specific_service(cls, pud: list, is_fixed_len_pdu: bool) -> ServiceBase:
+    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
         raise NotImplementedError
 
 
@@ -69,12 +77,15 @@ class AirConditionerServiceIDEnum(enum.IntEnum):
 
 class AirConditioner(SADevice):
     @classmethod
-    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> ServiceBase:
-        assert (isinstance(pdu, list) and len(pdu) == 3, f'{pdu}')
-        _pdu = list(pdu)
+    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
+        if not isinstance(pdu, list) or len(pdu) < 3:
+            raise ValueError(f'service pdu invalid, {pdu}')
         if not is_fixed_len_pdu:
             raise NotImplementedError
-        _service = ServiceBase.from_fixed_len_pdu(pdu=_pdu)
+
+        _pdu = list(pdu)
+        logger.debug(f'parsing dev service pdu {_pdu}')
+        _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
         if _service.service_id == AirConditionerServiceIDEnum.POWER_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == AirConditionerServiceIDEnum.OP_MODE_RW:
@@ -187,3 +198,135 @@ class AirConditioner(SADevice):
         _service.name = AirConditionerServiceIDEnum(_service.service_id).name
         return _service
 
+
+class DehumidifierServiceIDEnum(enum.IntEnum):
+    POWER_RW = 0x00
+    OP_MODE_RW = 0x01
+    OP_TIMER_RW = 0x02
+    HUMIDITY_CFG_RW = 0x03
+    DEHUMIDIFIER_LEVEL_RW = 0x04
+    DRY_CLOTHE_LEVEL_RW = 0x05
+    TEMPERATURE_R = 0x06
+    HUMIDITY_R = 0x07
+    FAN_DIRECTION_AUTO_RW = 0x08
+    FAN_DIRECTION_LEVEL_RW = 0x09
+    WATER_FULL_ALARM_R = 0x0a
+    FILTER_CLEAN_NOTIFY_RW = 0x0b
+    MOOD_LED_RW = 0x0c
+    AIR_CLEAN_MODE_RW = 0x0d
+    FAN_LEVEL_RW = 0x0e
+    SIDE_FAN_R = 0x0f
+    AUDIO_RW = 0x10
+    DEFROST_DISPLAY_R = 0x11
+    DISPLAY_ERR_R = 0x12
+    DEV_MILDEW_RW = 0x13
+    HUMIDITY_HIGH_NOTIFY_RW = 0x14
+    HUMIDITY_HIGH_CFG_RW = 0x15
+    KEYPAD_LOCK_RW = 0x16
+    REMOTE_CTRL_LOCK_RW = 0x17
+    SAA_CTRL_AUDIO_RW = 0x18
+    OP_CURRENT_R = 0x19
+    OP_VOLTAGE_R = 0x1a
+    OP_POWER_FACTOR_R = 0x1b
+    OP_POWER_WATT_RW = 0x1c
+    TOTAL_WATT_RW = 0x1d
+    ERR_HISTORY_1_R = 0x1e
+    ERR_HISTORY_2_R = 0x1f
+    ERR_HISTORY_3_R = 0x20
+    ERR_HISTORY_4_R = 0x21
+    ERR_HISTORY_5_R = 0x22
+
+
+class Dehumidifier(SADevice):
+    @classmethod
+    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
+        if not isinstance(pdu, list) or len(pdu) < 3:
+            raise ValueError(f'service pdu invalid, {pdu}')
+        if not is_fixed_len_pdu:
+            raise NotImplementedError
+
+        _pdu = list(pdu)
+        _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
+        if _service.service_id == DehumidifierServiceIDEnum.POWER_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_MODE_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_TIMER_RW:
+            _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_CFG_RW:
+            _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.DEHUMIDIFIER_LEVEL_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.DRY_CLOTHE_LEVEL_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.TEMPERATURE_R:
+            _service = Int8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_R:
+            _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.FAN_DIRECTION_AUTO_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.FAN_DIRECTION_LEVEL_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.WATER_FULL_ALARM_R:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.MOOD_LED_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.AIR_CLEAN_MODE_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.FAN_LEVEL_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.SIDE_FAN_R:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.AUDIO_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.DEFROST_DISPLAY_R:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.DISPLAY_ERR_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.DEV_MILDEW_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_HIGH_NOTIFY_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_HIGH_CFG_RW:
+            _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.KEYPAD_LOCK_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.REMOTE_CTRL_LOCK_RW:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.SAA_CTRL_AUDIO_RW:
+            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_CURRENT_R:
+            _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_VOLTAGE_R:
+            _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_POWER_FACTOR_R:
+            _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.OP_POWER_WATT_RW:
+            _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.TOTAL_WATT_RW:
+            _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_1_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_2_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_3_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_4_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_5_R:
+            _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
+        else:
+            raise NotImplementedError
+
+        _service.name = AirConditionerServiceIDEnum(_service.service_id).name
+        return _service
+
+
+__all__ = [
+    'AirConditioner',
+    'AirConditionerServiceIDEnum',
+    'Dehumidifier',
+    'DehumidifierServiceIDEnum'
+]

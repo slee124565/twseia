@@ -1,3 +1,4 @@
+import logging
 from .constants import SAServiceIOMode, SAClassID
 from .constants import SADeviceType
 from .constants import SARegisterServiceID
@@ -5,6 +6,9 @@ from .constants import SAPacketDataLenType
 from .utils import compute_pdu_checksum
 from .services import SADataValueType
 from .devices import AirConditioner
+from .devices import Dehumidifier
+
+logger = logging.getLogger(__name__)
 
 
 class SARequestPacket:
@@ -27,6 +31,18 @@ class _BasePacket:
     data_bytes = None
     checksum = None
 
+    def to_json(self):
+        payload = {
+            'len': self.len,
+            'type_id': self.type_id,
+            'io_mode_id': self.io_mode_id,
+            'service_id': self.service_id,
+            'data_bytes': self.data_bytes
+        }
+        if self.data_type_id is not None:
+            payload['data_type_id'] = self.data_type_id
+        return payload
+
     @classmethod
     def raise_if_packet_len_checksum_invalid(cls, pdu: list):
         if not isinstance(pdu, list):
@@ -46,8 +62,8 @@ class _BasePacket:
         packet.len = _pdu[0]
         packet.type_id = _pdu[1]
         packet.io_mode_id = _pdu[1] >> 7
-        packet.service_id = _pdu[1] & 0x7F
-        packet.data_bytes = _pdu[2:-1]
+        packet.service_id = _pdu[2] & 0x7F
+        packet.data_bytes = _pdu[3:-1]
         packet.checksum = _pdu[-1]
         return packet
 
@@ -58,10 +74,10 @@ class _BasePacket:
         packet = cls()
         packet.len = _pdu[0]
         packet.type_id = _pdu[1]
-        packet.io_mode_id = _pdu[1] >> 7
-        packet.service_id = _pdu[1] & 0x7F
-        packet.data_type_id = _pdu[2]
-        packet.data_bytes = _pdu[3:-1]
+        packet.io_mode_id = _pdu[2] >> 7
+        packet.service_id = _pdu[2] & 0x7F
+        packet.data_type_id = _pdu[3]
+        packet.data_bytes = _pdu[4:-1]
         packet.checksum = _pdu[-1]
         return packet
 
@@ -140,17 +156,25 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
         n = n_start
         packet.services = []
         is_fixed_len_pdu = True if packet.data_type_id == SAPacketDataLenType.FIXED_LEN else False
-        while n < len(pdu)-1:
+        while n < len(_pdu)-1:
             if is_fixed_len_pdu:
                 _len = 3
             else:
                 data_type_id = _pdu[n + 1]
-                _len = SADataValueType.read_data_type_len_by_id(data_type_id=data_type_id)
+                _len = SADataValueType.query_data_type_bytes_len(data_type_id=data_type_id)
 
-            service = AirConditioner.convert_dev_specific_service(
-                pdu=pdu[n:n + _len],
-                is_fixed_len_pdu=is_fixed_len_pdu
-            )
+            # logger.debug(f'parsing dev service pdu {_pdu[n:n + _len]}')
+            if packet.type_id == SADeviceType.AIR_CONDITIONER:
+                service = AirConditioner.convert_dev_specific_service(
+                    pdu=_pdu[n:n + _len],
+                    is_fixed_len_pdu=is_fixed_len_pdu)
+            elif packet.type_id == SADeviceType.DEHUMIDIFIER:
+                service = Dehumidifier.convert_dev_specific_service(
+                    pdu=_pdu[n:n + _len],
+                    is_fixed_len_pdu=is_fixed_len_pdu)
+            else:
+                raise NotImplementedError
+
             packet.services.append(service)
             n += _len
         return packet
