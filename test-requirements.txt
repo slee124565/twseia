@@ -1,5 +1,6 @@
 flake8
 nose
 coverage
-sphinx_rtd_theme
 sphinx
+sphinx_rtd_theme
+sphinxcontrib-napoleon
