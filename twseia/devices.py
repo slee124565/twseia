@@ -19,7 +19,329 @@ class SADevice:
         raise NotImplementedError
 
 
-class AirConditionerServiceIDEnum(enum.IntEnum):
+class ACPowerService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACOpModeService(enum.IntEnum):
+    COOL = 0
+    DEHUMIDIFICATION = 1
+    FAN = 2
+    AUTO = 3
+    HEAT = 4
+
+
+class ACFanLevelService(enum.IntEnum):
+    AUTO = 0
+    LEVEL_1 = 1
+    LEVEL_2 = 2
+    LEVEL_3 = 3
+    LEVEL_4 = 4
+    LEVEL_5 = 5
+    LEVEL_6 = 6
+    LEVEL_7 = 7
+    LEVEL_8 = 8
+    LEVEL_9 = 9
+    LEVEL_10 = 10
+    LEVEL_11 = 11
+    LEVEL_12 = 12
+    LEVEL_13 = 13
+    LEVEL_14 = 14
+    LEVEL_15 = 15
+
+
+# class ACTemperatureCfgService(enum.IntEnum):
+# class ACTemperatureService(enum.IntEnum):
+class ACComfortableService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+# class ACComfortableTimerService(enum.IntEnum):
+class ACFuzzyTemperatureService(enum.IntEnum):
+    BALANCE = 0
+    COLD = 1
+    HOT = 2
+    OFF = 3
+    ON = 4
+
+
+class ACAirCleanModeService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+# class ACClockOnService(enum.IntEnum):
+# class ACClockOffService(enum.IntEnum):
+# class ACTimerOnService(enum.IntEnum):
+# class ACTimerOffService(enum.IntEnum):
+# class ACSysTimeService(enum.IntEnum):
+class ACFanUpdownService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACFanUpdownLevelService(enum.IntEnum):
+    LEVEL_0 = 0
+    LEVEL_1 = 1
+    LEVEL_2 = 2
+    LEVEL_3 = 3
+    LEVEL_4 = 4
+    LEVEL_5 = 5
+    LEVEL_6 = 6
+    LEVEL_7 = 7
+    LEVEL_8 = 8
+    LEVEL_9 = 9
+    LEVEL_10 = 10
+    LEVEL_11 = 11
+    LEVEL_12 = 12
+    LEVEL_13 = 13
+    LEVEL_14 = 14
+    LEVEL_15 = 15
+
+
+class ACFanSwingService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACFanSwingLevelService(enum.IntEnum):
+    LEVEL_0 = 0
+    LEVEL_1 = 1
+    LEVEL_2 = 2
+    LEVEL_3 = 3
+    LEVEL_4 = 4
+    LEVEL_5 = 5
+    LEVEL_6 = 6
+    LEVEL_7 = 7
+    LEVEL_8 = 8
+    LEVEL_9 = 9
+    LEVEL_10 = 10
+    LEVEL_11 = 11
+    LEVEL_12 = 12
+    LEVEL_13 = 13
+    LEVEL_14 = 14
+    LEVEL_15 = 15
+
+
+class ACFilterCleanNotifyService(enum.IntEnum):
+    NORMAL = 0
+    NEED_CLEAN = 1
+
+
+# class ACDehumidifierCfgService(enum.IntEnum):
+# class ACHumidityService(enum.IntEnum):
+class ACSysCheckService(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACAirDetectService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACDevMildewService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACSelfCleanService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACMotionDetectModeService(enum.IntEnum):
+    OFF = 0
+    DETECT_PERSON = 1
+    NOT_DETECT_PERSON = 2
+    AUTO_DETECTION = 3
+
+
+class ACFastOpService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+class ACPowerSavingOpService(enum.IntEnum):
+    OFF = 0
+    ON = 1
+
+
+# class ACPowerLimitOpService(enum.IntEnum):
+class ACRemoteCtrlLockService(enum.IntEnum):
+    POWER = 0
+    OP_MODE = 1
+    TEMPERATURE_CFG = 2
+    FAN_UP_DOWN = 3
+    FAN_UPDOWN_SWING = 4
+    OFF_KEY = 5
+
+
+class ACSaaCtrlAudioService(enum.IntEnum):
+    AUDIO = 0
+    SILENT = 1
+
+
+class ACBodyDisplayModeService(enum.IntEnum):
+    BRIGHT = 0
+    DARK = 1
+    OFF = 2
+    ALL_OFF = 3
+
+
+class ACMoisturizeModeService(enum.IntEnum):
+    OFF = 0
+    LOW = 1
+    HIGH = 2
+
+
+# class ACOutdoorTemperatureService(enum.IntEnum):
+# class ACIndoorUnitWattService(enum.IntEnum):
+# class ACOutdoorUnitWattService(enum.IntEnum):
+# class ACOutdoorUnitCurrentService(enum.IntEnum):
+# class ACOutdoorUnitVoltateService(enum.IntEnum):
+# class ACOutdoorUnitPowerFactorService(enum.IntEnum):
+# class ACOutdoorUnitInstantWattService(enum.IntEnum):
+# class ACTotalWattService(enum.IntEnum):
+class ACDisplayErrService(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACErrHistory1Service(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACErrHistory2Service(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACErrHistory3Service(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACErrHistory4Service(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+class ACErrHistory5Service(enum.IntEnum):
+    NORMAL = 0
+    ERR_1 = 1
+    ERR_2 = 2
+    ERR_3 = 3
+    ERR_4 = 4
+    ERR_5 = 5
+    ERR_6 = 6
+    ERR_7 = 7
+    ERR_8 = 8
+    ERR_9 = 9
+    ERR_10 = 10
+    ERR_11 = 11
+    ERR_12 = 12
+    ERR_13 = 13
+    ERR_14 = 14
+    ERR_15 = 15
+
+
+# class ACMaintenanceAccuOpHourService(enum.IntEnum):
+# class ACFilterAccuOpHourService(enum.IntEnum):
+# class ACSysYearService(enum.IntEnum):
+# class ACSysMonthDayService(enum.IntEnum):
+# class ACMonthlyWattService(enum.IntEnum):
+# class ACTimerOff2Service(enum.IntEnum):
+
+
+class ACServiceIDEnum(enum.IntEnum):
     POWER_RW = 0x00
     OP_MODE_RW = 0x01
     FAN_LEVEL_RW = 0x02
@@ -86,116 +408,117 @@ class AirConditioner(SADevice):
         _pdu = list(pdu)
         logger.debug(f'parsing dev service pdu {_pdu}')
         _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
-        if _service.service_id == AirConditionerServiceIDEnum.POWER_RW:
+        if _service.service_id == ACServiceIDEnum.POWER_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OP_MODE_RW:
+        elif _service.service_id == ACServiceIDEnum.OP_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAN_LEVEL_RW:
+        elif _service.service_id == ACServiceIDEnum.FAN_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_CFG_RW:
+        elif _service.service_id == ACServiceIDEnum.TEMPERATURE_CFG_RW:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TEMPERATURE_R:
+        elif _service.service_id == ACServiceIDEnum.TEMPERATURE_R:
             _service = Int8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_RW:
+        elif _service.service_id == ACServiceIDEnum.COMFORTABLE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.COMFORTABLE_TIMER_RW:
+        elif _service.service_id == ACServiceIDEnum.COMFORTABLE_TIMER_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FUZZY_TEMPERATURE_RW:
+        elif _service.service_id == ACServiceIDEnum.FUZZY_TEMPERATURE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.AIR_CLEAN_MODE_RW:
+        elif _service.service_id == ACServiceIDEnum.AIR_CLEAN_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_ON_RW:
+        elif _service.service_id == ACServiceIDEnum.CLOCK_ON_RW:
             _service = HMService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.CLOCK_OFF_RW:
+        elif _service.service_id == ACServiceIDEnum.CLOCK_OFF_RW:
             _service = HMService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_ON_RW:
+        elif _service.service_id == ACServiceIDEnum.TIMER_ON_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_RW:
+        elif _service.service_id == ACServiceIDEnum.TIMER_OFF_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SYS_TIME_RW:
+        elif _service.service_id == ACServiceIDEnum.SYS_TIME_RW:
             _service = HMService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_RW:
+        elif _service.service_id == ACServiceIDEnum.FAN_UPDOWN_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAN_UPDOWN_LEVEL_RW:
+        elif _service.service_id == ACServiceIDEnum.FAN_UPDOWN_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_RW:
+        elif _service.service_id == ACServiceIDEnum.FAN_SWING_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAN_SWING_LEVEL_RW:
+        elif _service.service_id == ACServiceIDEnum.FAN_SWING_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
+        elif _service.service_id == ACServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.DEHUMIDIFIER_CFG_RW:
+        elif _service.service_id == ACServiceIDEnum.DEHUMIDIFIER_CFG_RW:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.HUMIDITY_R:
+        elif _service.service_id == ACServiceIDEnum.HUMIDITY_R:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SYS_CHECK_R:
+        elif _service.service_id == ACServiceIDEnum.SYS_CHECK_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.AIR_DETECT_RW:
+        elif _service.service_id == ACServiceIDEnum.AIR_DETECT_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.DEV_MILDEW_RW:
+        elif _service.service_id == ACServiceIDEnum.DEV_MILDEW_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SELF_CLEAN_RW:
+        elif _service.service_id == ACServiceIDEnum.SELF_CLEAN_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.MOTION_DETECT_MODE_RW:
+        elif _service.service_id == ACServiceIDEnum.MOTION_DETECT_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FAST_OP_RW:
+        elif _service.service_id == ACServiceIDEnum.FAST_OP_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.POWER_SAVING_OP_RW:
+        elif _service.service_id == ACServiceIDEnum.POWER_SAVING_OP_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.POWER_LIMIT_OP_RW:
+        elif _service.service_id == ACServiceIDEnum.POWER_LIMIT_OP_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.REMOTE_CTRL_LOCK_RW:
+        elif _service.service_id == ACServiceIDEnum.REMOTE_CTRL_LOCK_RW:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SAA_CTRL_AUDIO_RW:
+        elif _service.service_id == ACServiceIDEnum.SAA_CTRL_AUDIO_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.BODY_DISPLAY_MODE_RW:
+        elif _service.service_id == ACServiceIDEnum.BODY_DISPLAY_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.MOISTURIZE_MODE_RW:
+        elif _service.service_id == ACServiceIDEnum.MOISTURIZE_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_TEMPERATURE_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_TEMPERATURE_R:
             _service = Int8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.INDOOR_UNIT_WATT_R:
+        elif _service.service_id == ACServiceIDEnum.INDOOR_UNIT_WATT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_WATT_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_WATT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.OUTDOOR_UNIT_INSTANT_WATT_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_INSTANT_WATT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TOTAL_WATT_RW:
+        elif _service.service_id == ACServiceIDEnum.TOTAL_WATT_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.DISPLAY_ERR_R:
+        elif _service.service_id == ACServiceIDEnum.DISPLAY_ERR_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_1_R:
+        elif _service.service_id == ACServiceIDEnum.ERR_HISTORY_1_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_2_R:
+        elif _service.service_id == ACServiceIDEnum.ERR_HISTORY_2_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_3_R:
+        elif _service.service_id == ACServiceIDEnum.ERR_HISTORY_3_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_4_R:
+        elif _service.service_id == ACServiceIDEnum.ERR_HISTORY_4_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.ERR_HISTORY_5_R:
+        elif _service.service_id == ACServiceIDEnum.ERR_HISTORY_5_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.MAINTENANCE_ACCU_OP_HOUR_RW:
+        elif _service.service_id == ACServiceIDEnum.MAINTENANCE_ACCU_OP_HOUR_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.FILTER_ACCU_OP_HOUR_RW:
+        elif _service.service_id == ACServiceIDEnum.FILTER_ACCU_OP_HOUR_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SYS_YEAR_RW:
+        elif _service.service_id == ACServiceIDEnum.SYS_YEAR_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.SYS_MONTH_DAY_RW:
+        elif _service.service_id == ACServiceIDEnum.SYS_MONTH_DAY_RW:
             _service = MDService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.MONTHLY_WATT_R:
+        elif _service.service_id == ACServiceIDEnum.MONTHLY_WATT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == AirConditionerServiceIDEnum.TIMER_OFF_2_RW:
+        elif _service.service_id == ACServiceIDEnum.TIMER_OFF_2_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         else:
-            raise Exception(f'Unknown device {cls.__name__} service_id {_service.service_id}')
+            logger.warning(f'Unknown {cls.__name__} service_id {_service.service_id}')
+            _service = Enum16Service.from_fixed_len_pdu(pdu=pdu)
 
-        _service.name = AirConditionerServiceIDEnum(_service.service_id).name
+        _service.name = ACServiceIDEnum(_service.service_id).name
         return _service
 
 
@@ -320,13 +643,13 @@ class Dehumidifier(SADevice):
         else:
             raise NotImplementedError
 
-        _service.name = AirConditionerServiceIDEnum(_service.service_id).name
+        _service.name = ACServiceIDEnum(_service.service_id).name
         return _service
 
 
 __all__ = [
     'AirConditioner',
-    'AirConditionerServiceIDEnum',
+    'ACServiceIDEnum',
     'Dehumidifier',
     'DehumidifierServiceIDEnum'
 ]
