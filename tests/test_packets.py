@@ -25,7 +25,7 @@ class TestSAInfoRegisterPackets(unittest.TestCase):
         self.assertEqual(len(packet.services), 18)
         for service in packet.services:
             self.assertTrue(isinstance(service, twseia.SAServiceBase))
-            self.assertTrue(twseia.AirConditionerServiceIDEnum(service.service_id).name,
+            self.assertTrue(twseia.ACServiceIDEnum(service.service_id).name,
                             f'service_id {service.service_id}')
         self.assertTrue(packet)
 
