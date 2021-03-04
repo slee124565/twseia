@@ -10,7 +10,7 @@ Welcome to TWSEIA' documentation!
    :maxdepth: 2
 
    readme
-   apitwseia
+   twseia
 
 Indices and tables
 ==================

@@ -1,5 +1,6 @@
-""""""
-from tests.sample_pdus import *
+"""SmartApplication: A Python driver for TaiSEIA protocol device control via serial port (via USB, RS485 or RS232)."""
+
+from tests.sample_pdus import kHITACHI_AC_RAD_50NK_REGISTER_PDU
 from .constants import SARegisterServiceID
 from .constants import SADeviceType
 from .packets import SAInfoRequestPacket
@@ -11,21 +12,35 @@ from .packets import SAStateWriteResponsePacket
 
 
 class SmartApplication:
+    """SmartApplication(SA) class for talking to TaiSEIA Smart Application device.
+
+    Uses TaiSEIA protocol via RS232
+
+    Attributes:
+        port (str): The serial port name, for example ``/dev/ttyUSB0`` (Linux),
+        ``/dev/tty.usbserial`` (OS X) or ``COM4`` (Windows).
+    """
     _device = None
 
     def __init__(self, port='/dev/ttyUSB0'):
         """"""
         self.port = port
-        self.register()
+        # self.register()
 
     @property
-    def device(self):
-        if self._device is None:
-            raise Exception(f'Execute SmartApplication.register first')
-        return self._device
+    def services(self) -> list:
+        """SA Service command `SAService` supported list."""
+        if isinstance(self._device, SAInfoRegisterPacket):
+            return self._device.services
+        else:
+            return []
 
     def request(self, payload: list) -> list:
-        """todo: Send a Packet request for SA."""
+        """Send a TaiSEIA protocol request bytes packet for SA.
+
+        todo: Send bytes via real RS232.
+
+        """
         req = SAInfoRequestPacket.from_pdu(payload)
         if req.type_id == 0x00 and req.service_id == SARegisterServiceID.READ_ALL:
             # return SAInfoResponsePacket.from_pdu(pdu=kHITACHI_AC_RAD_50NK_REGISTER_PDU)
@@ -76,7 +91,7 @@ class SmartApplication:
                 raise NotImplementedError
 
     def register(self) -> SAInfoRegisterPacket:
-        """Send a Register request for SA."""
+        """Send a Register request packet for SA."""
         payload = SAInfoRequestPacket.create(
             sa_info_type=SARegisterServiceID.READ_ALL
         ).to_pdu()
@@ -86,7 +101,7 @@ class SmartApplication:
         return device
 
     def read_state(self, service_id) -> SAStateReadResponsePacket:
-        """Send a State Read request for SA."""
+        """Send a State Read request packet for SA."""
         payload = SAStateReadRequestPacket.create(
             type_id=self._device.type_id,
             service_id=service_id
@@ -102,7 +117,7 @@ class SmartApplication:
     #     raise NotImplementedError
 
     def write_state(self, service_id, value) -> SAStateWriteResponsePacket:
-        """Send a State Write request for SA."""
+        """Send a State Write request packet for SA."""
         payload = SAStateWriteRequestPacket.create(
             type_id=self._device.type_id,
             service_id=service_id,

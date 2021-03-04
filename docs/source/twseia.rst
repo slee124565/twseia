@@ -1,6 +1,11 @@
 twseia package
 ==============
 
+.. automodule:: twseia
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -48,14 +53,6 @@ twseia.utils module
 -------------------
 
 .. automodule:: twseia.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: twseia
    :members:
    :undoc-members:
    :show-inheritance:

@@ -11,11 +11,11 @@ class TestSmartApplication(unittest.TestCase):
 
     def setUp(self) -> None:
         self.sa = twseia.SmartApplication()
-        self.sa.register()
-        self.assertTrue(isinstance(self.sa.device, twseia.SAInfoRegisterPacket))
+        resp = self.sa.register()
+        self.assertTrue(isinstance(resp, twseia.SAInfoRegisterPacket))
 
     def test_read_service(self):
-        for service in self.sa.device.services:
+        for service in self.sa.services:
             assert isinstance(service, twseia.SAServiceBase)
             response = self.sa.read_state(
                 service_id=service.service_id)
