@@ -8,9 +8,8 @@ Welcome to TWSEIA' documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   modules
+   readme
 
 Indices and tables
 ==================
