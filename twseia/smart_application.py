@@ -1,5 +1,7 @@
+""""""
 from tests.sample_pdus import *
-from .constants import SARegisterServiceID, SADeviceType
+from .constants import SARegisterServiceID
+from .constants import SADeviceType
 from .packets import SAInfoRequestPacket
 from .packets import SAInfoRegisterPacket
 from .packets import SAStateReadRequestPacket
@@ -14,6 +16,7 @@ class SmartApplication:
     def __init__(self, port='/dev/ttyUSB0'):
         """"""
         self.port = port
+        self.register()
 
     @property
     def device(self):
