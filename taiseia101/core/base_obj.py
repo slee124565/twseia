@@ -33,6 +33,7 @@ class BaseObject(object):
 
 
 class CmdTypeCode(BaseObject):
+    """deprecated by SACmdType"""
     READ = 0
     WRITE = 1
 
