@@ -1,4 +1,4 @@
-from twseia.taiseia101.core import *
+from taiseia101.core import *
 
 logger = logging.getLogger(__name__)
 

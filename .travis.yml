@@ -10,4 +10,5 @@ install:
 # command to run tests
 script:
   - nosetests --cover-erase --with-coverage
+  - sphinx-build docs/source docs/build
   - coveralls --verbose

@@ -1,24 +1,8 @@
 twseia package
 ==============
 
-Subpackages
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   twseia.taiseia101
-
 Submodules
 ----------
-
-twseia.airconditioner module
-----------------------------
-
-.. automodule:: twseia.airconditioner
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 twseia.constants module
 -----------------------
@@ -28,26 +12,10 @@ twseia.constants module
    :undoc-members:
    :show-inheritance:
 
-twseia.dehumidifier module
---------------------------
-
-.. automodule:: twseia.dehumidifier
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 twseia.devices module
 ---------------------
 
 .. automodule:: twseia.devices
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-twseia.fan module
------------------
-
-.. automodule:: twseia.fan
    :members:
    :undoc-members:
    :show-inheritance:
