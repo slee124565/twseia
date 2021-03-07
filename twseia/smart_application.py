@@ -1,8 +1,8 @@
 """SmartApplication: A Python driver for TaiSEIA protocol device control via serial port (via USB, RS485 or RS232)."""
 
 from tests.sample_pdus import kHITACHI_AC_RAD_50NK_REGISTER_PDU
-from .constants import SARegisterServiceID
-from .constants import SADeviceType
+from .constants import SARegisterServiceIDEnum
+from .constants import SATypeIDEnum
 from .packets import SAInfoRequestPacket
 from .packets import SAInfoRegisterPacket
 from .packets import SAStateReadRequestPacket
@@ -42,11 +42,11 @@ class SmartApplication:
 
         """
         req = SAInfoRequestPacket.from_pdu(payload)
-        if req.type_id == 0x00 and req.service_id == SARegisterServiceID.READ_ALL:
+        if req.type_id == 0x00 and req.service_id == SARegisterServiceIDEnum.REGISTRATION:
             # return SAInfoResponsePacket.from_pdu(pdu=kHITACHI_AC_RAD_50NK_REGISTER_PDU)
             return kHITACHI_AC_RAD_50NK_REGISTER_PDU
         else:
-            if req.type_id == SADeviceType.AIR_CONDITIONER:
+            if req.type_id == SATypeIDEnum.AIR_CONDITIONER:
                 if payload == [0x06, 0x01, 0x00, 0xff, 0xff, 0x07]:
                     return [0x06, 0x01, 0x00, 0x00, 0x00, 0x07]
                 elif payload == [0x06, 0x01, 0x01, 0xff, 0xff, 0x06]:
@@ -93,7 +93,7 @@ class SmartApplication:
     def register(self) -> SAInfoRegisterPacket:
         """Send a Register request packet for SA."""
         payload = SAInfoRequestPacket.create(
-            sa_info_type=SARegisterServiceID.READ_ALL
+            sa_info_type=SARegisterServiceIDEnum.REGISTRATION
         ).to_pdu()
         response = self.request(payload=payload)
         device = SAInfoRegisterPacket.from_pdu(pdu=response)

@@ -8,14 +8,14 @@ class TestSAInfoRegisterPackets(unittest.TestCase):
     def test_sa_info_request_packet(self):
         pdu = [6, 0, 0, 255, 255, 6]  # Register Request Packet
         packet = twseia.SAInfoRequestPacket.create(
-            sa_info_type=twseia.SARegisterServiceID.READ_ALL
+            sa_info_type=twseia.SARegisterServiceIDEnum.REGISTRATION
         )
         self.assertEqual(packet.to_pdu(), pdu)
 
     def test_sa_info_register_packet(self):
         pdu = kHITACHI_AC_RAD_50NK_REGISTER_PDU
         packet = twseia.SAInfoRegisterPacket.from_pdu(pdu=pdu)
-        self.assertEqual(packet.type_id, twseia.SADeviceType.AIR_CONDITIONER)
+        self.assertEqual(packet.type_id, twseia.SATypeIDEnum.AIR_CONDITIONER)
         self.assertEqual(packet.class_id, twseia.SAClassID.HOME_DEVICE)
         self.assertEqual(packet.data_type_id, twseia.SAPacketDataLenType.FIXED_LEN)
         self.assertEqual(packet.major_ver, 4)

@@ -1,7 +1,7 @@
 import logging
 from .constants import SAServiceIOMode, SAClassID
-from .constants import SADeviceType
-from .constants import SARegisterServiceID
+from .constants import SATypeIDEnum
+from .constants import SARegisterServiceIDEnum
 from .constants import SAPacketDataLenType
 from .utils import compute_pdu_checksum
 from .services import SADataValueType
@@ -109,7 +109,7 @@ class SAInfoRequestPacket(_BasePacket, SARequestPacket):
         return super(SAInfoRequestPacket, self).to_general_pdu()
 
     @classmethod
-    def create(cls, sa_info_type: SARegisterServiceID = SARegisterServiceID.READ_ALL):
+    def create(cls, sa_info_type: SARegisterServiceIDEnum = SARegisterServiceIDEnum.REGISTRATION):
         packet = cls()
         packet.len = 6
         packet.type_id = 0x00
@@ -164,11 +164,11 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
                 _len = SADataValueType.query_data_type_bytes_len(data_type_id=data_type_id)
 
             # logger.debug(f'parsing dev service pdu {_pdu[n:n + _len]}')
-            if packet.type_id == SADeviceType.AIR_CONDITIONER:
+            if packet.type_id == SATypeIDEnum.AIR_CONDITIONER:
                 service = AirConditioner.convert_dev_specific_service(
                     pdu=_pdu[n:n + _len],
                     is_fixed_len_pdu=is_fixed_len_pdu)
-            elif packet.type_id == SADeviceType.DEHUMIDIFIER:
+            elif packet.type_id == SATypeIDEnum.DEHUMIDIFIER:
                 service = Dehumidifier.convert_dev_specific_service(
                     pdu=_pdu[n:n + _len],
                     is_fixed_len_pdu=is_fixed_len_pdu)
@@ -199,11 +199,11 @@ class SAInfoResponsePacket(_BasePacket):
     @classmethod
     def from_pdu(cls, pdu: list):
         packet = super(SAInfoResponsePacket, cls).from_general_pdu(pdu=pdu)
-        if packet.service_id == SARegisterServiceID.READ_ALL:
+        if packet.service_id == SARegisterServiceIDEnum.REGISTRATION:
             if packet.io_mode_id != SAServiceIOMode.READ:
                 raise ValueError(f'Packet io_mode_id {packet.io_mode_id} invalid')
             return SAInfoRegisterPacket.from_pdu(pdu=pdu)
-        elif packet.service_id == SARegisterServiceID.READ_DEVICE_SERVICES_STATUS:
+        elif packet.service_id == SARegisterServiceIDEnum.READ_CURRENT_SERVICES_STATES:
             return SAInfoDevStatesPacket.from_pdu(pdu=pdu)
         else:
             raise NotImplementedError
