@@ -18,12 +18,12 @@ class SmartApplication:
 
     Attributes:
         port (str): The serial port name, for example ``/dev/ttyUSB0`` (Linux),
-        ``/dev/tty.usbserial`` (OS X) or ``COM4`` (Windows).
+            ``/dev/tty.usbserial`` (OS X) or ``COM4`` (Windows).
+
     """
     _device = None
 
     def __init__(self, port='/dev/ttyUSB0'):
-        """"""
         self.port = port
         # self.register()
 

@@ -10,6 +10,6 @@ install:
 # command to run tests
 script:
   - nosetests --cover-erase --with-coverage
-  - sphinx-apidoc -E -f -o docs/source twseia
-  - sphinx-build docs/source docs/build
+  - sphinx-apidoc -M -E -f -o docs/source twseia
+  - sphinx-build docs/source docs/build/html
   - coveralls --verbose

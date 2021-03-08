@@ -12,7 +12,7 @@ TWSEIA
    :target: https://github.com/slee124565/twseia/blob/main/LICENSE
 
 .. image:: https://img.shields.io/pypi/v/twseia.svg
-   :target: http://badge.fury.io/py/twseia
+   :target: https://pypi.org/project/twseia
 
 A Taiwan Smart Energy Industry Association (TaiSEIA) Protocol Python Library.
 
