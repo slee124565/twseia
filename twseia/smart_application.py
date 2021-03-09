@@ -1,6 +1,7 @@
 """SmartApplication: A Python driver for TaiSEIA protocol device control via serial port (via USB, RS485 or RS232)."""
 
 from tests.sample_pdus import kHITACHI_AC_RAD_50NK_REGISTER_PDU
+import serial
 from .constants import SARegisterServiceIDEnum
 from .constants import SATypeIDEnum
 from .packets import SAInfoRequestPacket
@@ -25,7 +26,15 @@ class SmartApplication:
 
     def __init__(self, port='/dev/ttyUSB0'):
         self.port = port
-        # self.register()
+        self._serial = serial.Serial(
+            port=port,
+            baudrate=9600,
+            parity=serial.PARITY_NONE,
+            bytesize=8,
+            stopbits=1,
+            timeout=0.05,
+            write_timeout=2.0,
+        )
 
     @property
     def services(self) -> list:
@@ -36,6 +45,12 @@ class SmartApplication:
             return []
 
     def request(self, payload: list) -> list:
+        """Send a TaiSEIA protocol request bytes packet for SA."""
+        self._serial.write(bytearray(payload))
+        response = self._serial.readall()
+        return list(response)
+
+    def request_emulator(self, payload: list) -> list:
         """Send a TaiSEIA protocol request bytes packet for SA.
 
         todo: Send bytes via real RS232.
