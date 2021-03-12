@@ -65,11 +65,23 @@ class SAServiceBase:
             'name': self.name
         }
 
+    def to_cmd_help(self):
+        arr = self.name.split('_')
+        cmd = '_'.join([str(n).lower() for n in arr[:-1]])
+        return {
+            'cmd': cmd,
+            'mode': 'RW' if self.io_mode_id == 1 else 'R',
+            'type': f'{self.__class__.__name__.replace("Service", "")}'
+        }
 
-class SAService:
-    @classmethod
-    def from_service(cls, service: SAServiceBase) -> SAServiceBase:
-        raise NotImplementedError
+
+# class SAService:
+#     @classmethod
+#     def from_service(cls, service: SAServiceBase) -> SAServiceBase:
+#         raise NotImplementedError
+#
+#     def to_cmd_help(self):
+#         raise NotImplementedError
 
 
 class Enum16Service(SAServiceBase):
@@ -291,5 +303,5 @@ __all__ = [
     'Int32Service',
     'MDService',
     'HMService',
-    'MSService'
+    'MSService',
 ]

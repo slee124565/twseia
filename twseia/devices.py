@@ -19,9 +19,23 @@ class SADevice:
         raise NotImplementedError
 
 
-class ACPowerService(enum.IntEnum):
+class _PowerService(Enum16Service):
     OFF = 0
     ON = 1
+
+    def to_cmd_help(self):
+        _help = super(_PowerService, self).to_cmd_help()
+        _help.update({
+            'values': {
+                ACPowerService.OFF: 'ON',
+                ACPowerService.ON: 'OFF'
+            }
+        })
+        return _help
+
+
+class ACPowerService(_PowerService):
+    pass
 
 
 class ACOpModeService(enum.IntEnum):
@@ -409,7 +423,7 @@ class AirConditioner(SADevice):
         logger.debug(f'parsing dev service pdu {_pdu}')
         _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
         if _service.service_id == ACServiceIDEnum.POWER_RW:
-            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+            _service = ACPowerService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == ACServiceIDEnum.OP_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == ACServiceIDEnum.FAN_LEVEL_RW:
@@ -560,6 +574,10 @@ class DehumidifierServiceIDEnum(enum.IntEnum):
     ERR_HISTORY_5_R = 0x22
 
 
+class DHPowerService(_PowerService):
+    pass
+
+
 class Dehumidifier(SADevice):
     @classmethod
     def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
@@ -571,7 +589,7 @@ class Dehumidifier(SADevice):
         _pdu = list(pdu)
         _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
         if _service.service_id == DehumidifierServiceIDEnum.POWER_RW:
-            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
+            _service = DHPowerService.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == DehumidifierServiceIDEnum.OP_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == DehumidifierServiceIDEnum.OP_TIMER_RW:
