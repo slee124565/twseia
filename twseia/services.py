@@ -68,10 +68,21 @@ class SAServiceBase:
     def to_cmd_help(self):
         arr = self.name.split('_')
         cmd = '_'.join([str(n).lower() for n in arr[:-1]])
+        # _helps = self.to_json()
+        # _helps.update({
+        #     'class': f'{self.__class__.__name__}',
+        #     'cmd': cmd,
+        #     'mode': 'RW' if self.io_mode_id == 1 else 'R',
+        #     'type': f'{self.__class__.__name__.replace("Service", "")}',
+        #     # 'bytes': self.data_bytes
+        # })
+        # return _helps
         return {
+            'class': f'{self.__class__.__name__}',
             'cmd': cmd,
             'mode': 'RW' if self.io_mode_id == 1 else 'R',
-            'type': f'{self.__class__.__name__.replace("Service", "")}'
+            'type': f'{self.__class__.__name__.replace("Service", "")}',
+            # 'bytes': self.data_bytes
         }
 
 
@@ -118,6 +129,14 @@ class UInt8Service(SAServiceBase):
 
     def read_min(self):
         return int.from_bytes(self.data_bytes[-1:], 'big')
+
+    def to_cmd_help(self):
+        _help = super(UInt8Service, self).to_cmd_help()
+        _help.update({
+            'max': self.data_bytes[-2],
+            'min': self.data_bytes[-1]
+        })
+        return _help
 
 
 class UInt16Service(SAServiceBase):

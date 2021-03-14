@@ -133,6 +133,7 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
     brand = None
     model = None
     services = []
+    states = {}
 
     @classmethod
     def from_pdu(cls, pdu: list):

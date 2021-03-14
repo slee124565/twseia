@@ -38,7 +38,7 @@ class ACPowerService(_PowerService):
     pass
 
 
-class ACOpModeService(enum.IntEnum):
+class ACOpModeService(Enum16Service):
     COOL = 0
     DEHUMIDIFICATION = 1
     FAN = 2
@@ -536,7 +536,7 @@ class AirConditioner(SADevice):
         return _service
 
 
-class DehumidifierServiceIDEnum(enum.IntEnum):
+class DHServiceIDEnum(enum.IntEnum):
     POWER_RW = 0x00
     OP_MODE_RW = 0x01
     OP_TIMER_RW = 0x02
@@ -578,6 +578,61 @@ class DHPowerService(_PowerService):
     pass
 
 
+class DHOpModeIDEnum(enum.IntEnum):
+    """運轉模式設定功能
+
+    0:自動除濕,1:設定除濕,2:連續除濕,3:乾衣,4:空氣清淨,5:防霉防?,6:送風,7:人體舒適,8:低濕乾燥
+
+    """
+    AUTO = 0
+    CFG_DEHUMIDIFIER = 1
+    CONTINUE_DEHUMIDIFIER = 2
+    DRY_CLOTHE = 3
+    AIR_CLEAN = 4
+    DEV_MILDEW = 5
+    FAN_ONLY = 6
+    SUPER_DRY = 7
+
+
+class DHOpModeService(Enum16Service):
+    """運轉模式設定功能
+
+    0:自動除濕,1:設定除濕,2:連續除濕,3:乾衣,4:空氣清淨,5:防霉防?,6:送風,7:人體舒適,8:低濕乾燥
+
+    """
+    def to_cmd_help(self):
+        _help = super(DHOpModeService, self).to_cmd_help()
+        _values = {}
+        for e in list(DHOpModeIDEnum):
+            _values[e.value] = e.name
+        _help.update({
+            'type': 'Enum16',
+            'values': _values
+        })
+        return _help
+
+
+# class DHOpTimerIDEnum(enum.IntEnum):
+#     HR_1 = 1
+#     HR_2 = 2
+#     HR_4 = 4
+#     HR_6 = 6
+#     HR_8 = 8
+#     HR_10 = 10
+#     HR_12 = 12
+
+
+class DHOpTimerService(UInt8Service):
+    """0:關閉設定時間功能, 非0: 代表運轉時間, Unit: Hr"""
+
+    def to_cmd_help(self):
+        _help = super(DHOpTimerService, self).to_cmd_help()
+        _help.update({
+            'type': 'UInt8',
+        })
+        return _help
+
+
 class Dehumidifier(SADevice):
     @classmethod
     def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
@@ -588,80 +643,80 @@ class Dehumidifier(SADevice):
 
         _pdu = list(pdu)
         _service = SAServiceBase.from_fixed_len_pdu(pdu=_pdu)
-        if _service.service_id == DehumidifierServiceIDEnum.POWER_RW:
+        if _service.service_id == DHServiceIDEnum.POWER_RW:
             _service = DHPowerService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_MODE_RW:
-            _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_TIMER_RW:
+        elif _service.service_id == DHServiceIDEnum.OP_MODE_RW:
+            _service = DHOpModeService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DHServiceIDEnum.OP_TIMER_RW:
+            _service = DHOpTimerService.from_fixed_len_pdu(pdu=_pdu)
+        elif _service.service_id == DHServiceIDEnum.HUMIDITY_CFG_RW:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_CFG_RW:
-            _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.DEHUMIDIFIER_LEVEL_RW:
+        elif _service.service_id == DHServiceIDEnum.DEHUMIDIFIER_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.DRY_CLOTHE_LEVEL_RW:
+        elif _service.service_id == DHServiceIDEnum.DRY_CLOTHE_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.TEMPERATURE_R:
+        elif _service.service_id == DHServiceIDEnum.TEMPERATURE_R:
             _service = Int8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_R:
+        elif _service.service_id == DHServiceIDEnum.HUMIDITY_R:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.FAN_DIRECTION_AUTO_RW:
+        elif _service.service_id == DHServiceIDEnum.FAN_DIRECTION_AUTO_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.FAN_DIRECTION_LEVEL_RW:
+        elif _service.service_id == DHServiceIDEnum.FAN_DIRECTION_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.WATER_FULL_ALARM_R:
+        elif _service.service_id == DHServiceIDEnum.WATER_FULL_ALARM_R:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
+        elif _service.service_id == DHServiceIDEnum.FILTER_CLEAN_NOTIFY_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.MOOD_LED_RW:
+        elif _service.service_id == DHServiceIDEnum.MOOD_LED_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.AIR_CLEAN_MODE_RW:
+        elif _service.service_id == DHServiceIDEnum.AIR_CLEAN_MODE_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.FAN_LEVEL_RW:
+        elif _service.service_id == DHServiceIDEnum.FAN_LEVEL_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.SIDE_FAN_R:
+        elif _service.service_id == DHServiceIDEnum.SIDE_FAN_R:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.AUDIO_RW:
+        elif _service.service_id == DHServiceIDEnum.AUDIO_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.DEFROST_DISPLAY_R:
+        elif _service.service_id == DHServiceIDEnum.DEFROST_DISPLAY_R:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.DISPLAY_ERR_R:
+        elif _service.service_id == DHServiceIDEnum.DISPLAY_ERR_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.DEV_MILDEW_RW:
+        elif _service.service_id == DHServiceIDEnum.DEV_MILDEW_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_HIGH_NOTIFY_RW:
+        elif _service.service_id == DHServiceIDEnum.HUMIDITY_HIGH_NOTIFY_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.HUMIDITY_HIGH_CFG_RW:
+        elif _service.service_id == DHServiceIDEnum.HUMIDITY_HIGH_CFG_RW:
             _service = UInt8Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.KEYPAD_LOCK_RW:
+        elif _service.service_id == DHServiceIDEnum.KEYPAD_LOCK_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.REMOTE_CTRL_LOCK_RW:
+        elif _service.service_id == DHServiceIDEnum.REMOTE_CTRL_LOCK_RW:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.SAA_CTRL_AUDIO_RW:
+        elif _service.service_id == DHServiceIDEnum.SAA_CTRL_AUDIO_RW:
             _service = Enum16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_CURRENT_R:
+        elif _service.service_id == DHServiceIDEnum.OP_CURRENT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_VOLTAGE_R:
+        elif _service.service_id == DHServiceIDEnum.OP_VOLTAGE_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_POWER_FACTOR_R:
+        elif _service.service_id == DHServiceIDEnum.OP_POWER_FACTOR_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.OP_POWER_WATT_RW:
+        elif _service.service_id == DHServiceIDEnum.OP_POWER_WATT_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.TOTAL_WATT_RW:
+        elif _service.service_id == DHServiceIDEnum.TOTAL_WATT_RW:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_1_R:
+        elif _service.service_id == DHServiceIDEnum.ERR_HISTORY_1_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_2_R:
+        elif _service.service_id == DHServiceIDEnum.ERR_HISTORY_2_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_3_R:
+        elif _service.service_id == DHServiceIDEnum.ERR_HISTORY_3_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_4_R:
+        elif _service.service_id == DHServiceIDEnum.ERR_HISTORY_4_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == DehumidifierServiceIDEnum.ERR_HISTORY_5_R:
+        elif _service.service_id == DHServiceIDEnum.ERR_HISTORY_5_R:
             _service = Enum16BitService.from_fixed_len_pdu(pdu=_pdu)
         else:
             raise NotImplementedError
 
-        _service.name = ACServiceIDEnum(_service.service_id).name
+        _service.name = DHServiceIDEnum(_service.service_id).name
         return _service
 
 
@@ -669,5 +724,5 @@ __all__ = [
     'AirConditioner',
     'ACServiceIDEnum',
     'Dehumidifier',
-    'DehumidifierServiceIDEnum'
+    'DHServiceIDEnum'
 ]
