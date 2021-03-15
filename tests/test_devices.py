@@ -8,46 +8,46 @@ logging.getLogger('').handlers = []
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 
-# class TestSmartApplication(unittest.TestCase):
-#
-#     def test_create_register_cmd(self):
-#         register = twseia.SmartApplication.create_read_register_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x00, 0xFF, 0xFF, 0x06])
-#         register = twseia.SmartApplication.create_read_class_id_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x01, 0xFF, 0xFF, 0x07])
-#         register = twseia.SmartApplication.create_read_version_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x02, 0xFF, 0xFF, 0x04])
-#         register = twseia.SmartApplication.create_read_dev_type_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x04, 0xFF, 0xFF, 0x02])
-#         register = twseia.SmartApplication.create_read_brand_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x05, 0xFF, 0xFF, 0x03])
-#         register = twseia.SmartApplication.create_read_model_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x06, 0xFF, 0xFF, 0x00])
-#         register = twseia.SmartApplication.create_read_services_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x07, 0xFF, 0xFF, 0x01])
-#         register = twseia.SmartApplication.create_read_all_states_cmd(service_id=0x00)
-#         self.assertEqual(register, [0x06, 0x00, 0x08, 0xFF, 0xFF, 0x0E])
-#
-#     def test_parsing_register_response(self):
-#         test_pdu = []
-#         response = twseia.SmartApplication.parsing_read_register_response(pdu=test_pdu)
-#         self.assertTrue(isinstance(response, twseia.SAInfoRegisterPacket))
-#         assert isinstance(response, twseia.SAInfoRegisterPacket)
-#         self.assertTrue(response.type_id == 0x00)
-#         self.assertTrue(response.class_id < 4)
-#         self.assertTrue(response.service_id == 0x00)
-#         self.assertTrue(isinstance(response.brand, str))
-#         self.assertTrue(isinstance(response.model, str))
-#         self.assertTrue(isinstance(response.major_ver, int))
-#         self.assertTrue(isinstance(response.minor_ver, int))
-#         self.assertTrue(isinstance(response.services, list))
-#         self.assertTrue(len(response.services) > 0)
-#
-#         response = twseia.SmartApplication.parsing_read_class_id_response(pdu=test_pdu)
-#         assert isinstance(response, twseia.SAInfoRegisterPacket)
-#         self.assertTrue(response.type_id == 0x00)
-#         self.assertTrue(response.service_id == 0x01)
-#         self.assertTrue(response.class_id < 4)
+class TestSmartApplication(unittest.TestCase):
+
+    def test_create_register_cmd(self):
+        register = twseia.create_read_register_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x00, 0xFF, 0xFF, 0x06])
+        register = twseia.create_read_class_id_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x01, 0xFF, 0xFF, 0x07])
+        register = twseia.create_read_protocol_version_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x02, 0xFF, 0xFF, 0x04])
+        register = twseia.create_read_dev_type_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x04, 0xFF, 0xFF, 0x02])
+        register = twseia.create_read_brand_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x05, 0xFF, 0xFF, 0x03])
+        register = twseia.create_read_model_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x06, 0xFF, 0xFF, 0x00])
+        register = twseia.create_read_supported_services_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x07, 0xFF, 0xFF, 0x01])
+        register = twseia.create_current_states_cmd()
+        self.assertEqual(register, [0x06, 0x00, 0x08, 0xFF, 0xFF, 0x0E])
+
+    def test_parsing_register_response(self):
+        response = twseia.parsing_read_register_response(pdu=kPANASONIC_FYTW_08810115_REGISTER_PDU)
+        self.assertTrue(isinstance(response, twseia.SAInfoRegisterPacket))
+        assert isinstance(response, twseia.SAInfoRegisterPacket)
+        logging.info(f'{response.to_json()}')
+        self.assertTrue(response.type_id != 0x00)
+        self.assertTrue(response.class_id < 4)
+        self.assertTrue(response.service_id == 0x00)
+        self.assertTrue(isinstance(response.brand, str))
+        self.assertTrue(isinstance(response.model, str))
+        self.assertTrue(isinstance(response.major_ver, int))
+        self.assertTrue(isinstance(response.minor_ver, int))
+        self.assertTrue(isinstance(response.services, list))
+        self.assertTrue(len(response.services) > 0)
+
+        # response = twseia.SmartApplication.parsing_read_class_id_response(pdu=)
+        # assert isinstance(response, twseia.SAInfoRegisterPacket)
+        # self.assertTrue(response.type_id == 0x00)
+        # self.assertTrue(response.service_id == 0x01)
+        # self.assertTrue(response.class_id < 4)
 #
 #         response = twseia.SmartApplication.parsing_read_version_response(pdu=test_pdu)
 #         assert isinstance(response, twseia.SAInfoRegisterPacket)

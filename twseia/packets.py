@@ -141,13 +141,14 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
         _pdu = list(pdu)
         packet = cls()
         packet.len = _pdu[0]
-        assert _pdu[1] == 0x00
+        # assert _pdu[1] == 0x00
+        packet.service_id = _pdu[1]
         packet.data_type_id = _pdu[2] >> 7  # PacketDataUnitType
         packet.class_id = _pdu[2] & 0x0F
         packet.major_ver = _pdu[3]
         packet.minor_ver = _pdu[4]
         packet.fragment_offset = _pdu[5]
-        packet.type_id = SATypeIDEnum(int.from_bytes(_pdu[6:8], 'big'))
+        packet.type_id = int.from_bytes(_pdu[6:8], 'big')
         n_zero = _pdu[8:].index(0)
         packet.brand = bytearray(_pdu[8:8 + n_zero]).decode("utf-8")
         n_start = 8 + n_zero + 1
@@ -186,6 +187,8 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
             'class_name': SAClassID(self.class_id).name,
             'type_id': self.type_id,
             'type_name': SATypeIDEnum(self.type_id).name,
+            'service_id': self.service_id,
+            'service_name': SARegisterServiceIDEnum(self.service_id).name,
             'version': (self.major_ver, self.minor_ver),
             'fragment_offset': self.fragment_offset,
             'brand': self.brand,
