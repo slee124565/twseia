@@ -11,10 +11,12 @@ import socket
 # import serial
 import serial.threaded
 import time
+import struct
 
 
 class SerialToNet(serial.threaded.Protocol):
     """serial->socket"""
+    buffer = []
 
     def __init__(self):
         self.socket = None
@@ -25,10 +27,17 @@ class SerialToNet(serial.threaded.Protocol):
     def data_received(self, data_bytes):
         if self.socket is not None:
             # self.socket.sendall(data)
-            if isinstance(data_bytes, list):
-                self.socket.sendall(f'[{",".join([hex(n) for n in data_bytes])}]')
+            # sys.stderr.write(f'serial data recv: {data_bytes}, {len(data_bytes)}, {type(data_bytes)}\n')
+            self.buffer += list(data_bytes)
+            if len(self.buffer) > 0 and self.buffer[0] == len(self.buffer):
+                sys.stderr.write(f'buffer {self.buffer}\n')
+                response = ', '.join([f'{n}' for n in self.buffer]) + '\n'
+                sys.stderr.write(f'{response}\n')
+                self.socket.sendall(response.encode('utf-8'))
+                self.buffer = []
             else:
-                self.socket.sendall(data_bytes)
+                # sys.stderr.write(f'... recv_s_data {data_bytes}, buffer len {len(self.buffer)}\n')
+                pass
 
 
 if __name__ == '__main__':  # noqa
@@ -208,8 +217,14 @@ it waits for the next connect.
                         if not data:
                             break
                         # ser.write(data)
-                        txt_cmd = data.decode('utf-8')
-                        ser.write(bytearray([int(n) for n in txt_cmd.split(',')]))
+                        sys.stderr.write(f'net data: {data}, {len(data)}\n')
+                        txt_cmd = data.decode('utf-8').replace('\r','').replace('\n','')
+                        if txt_cmd.lower() == 'exit':
+                            break
+                        if txt_cmd.find('0x') >= 0:
+                            ser.write(bytearray([int(n, 16) for n in txt_cmd.split(',')]))
+                        else:
+                            ser.write(bytearray([int(n) for n in txt_cmd.split(',')]))
                     except socket.error as msg:
                         if args.develop:
                             raise
