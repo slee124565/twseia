@@ -5,7 +5,7 @@ from tests.sample_pdus import kHITACHI_AC_RAD_50NK_REGISTER_PDU
 from .constants import SARegisterServiceIDEnum
 from .constants import SATypeIDEnum
 from .packets import SAInfoRequestPacket
-from .packets import SAInfoRegisterPacket
+from .packets import SARegisterPacket
 from .packets import SAStateReadRequestPacket
 from .packets import SAStateReadResponsePacket
 from .packets import SAStateWriteRequestPacket
@@ -40,7 +40,7 @@ class SmartApplication:
     @property
     def services(self) -> list:
         """SA Service command `SAService` supported list."""
-        if isinstance(self._device, SAInfoRegisterPacket):
+        if isinstance(self._device, SARegisterPacket):
             return self._device.services
         else:
             return []
@@ -106,13 +106,13 @@ class SmartApplication:
             else:
                 raise NotImplementedError
 
-    def register(self) -> SAInfoRegisterPacket:
+    def register(self) -> SARegisterPacket:
         """Send a Register request packet for SA."""
         payload = SAInfoRequestPacket.create(
             sa_info_type=SARegisterServiceIDEnum.REGISTRATION
         ).to_pdu()
         response = self.request(payload=payload)
-        device = SAInfoRegisterPacket.from_pdu(pdu=response)
+        device = SARegisterPacket.from_pdu(pdu=response)
         self._device = device
         return device
 

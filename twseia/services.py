@@ -23,6 +23,50 @@ class SADataValueType(enum.IntEnum):
     STR = 0x20
 
 
+class SACmdHelp:
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
+    @property
+    def txt(self):
+        return self.kwargs.get('txt', None)
+
+    @property
+    def mode(self):
+        return self.kwargs.get('mode', None)
+
+    @property
+    def value_type(self):
+        return self.kwargs.get('type', None)
+
+    @property
+    def params(self):
+        return self.kwargs.get('params')
+
+    def update_kwargs(self, name, value):
+        self.kwargs.update({
+            name: value
+        })
+
+    def update_kwargs_type(self, value):
+        self.kwargs.update({
+            'type': value
+        })
+
+    def update_kwargs_params(self, value):
+        self.kwargs.update({
+            'params': value
+        })
+
+    def __str__(self):
+        return '{}'.format({
+            'txt': self.txt,
+            'mode': self.mode,
+            'type': self.value_type,
+            'params': self.params
+        })
+
+
 class SAServiceBase:
     io_mode_id = None
     service_id = None
@@ -65,34 +109,17 @@ class SAServiceBase:
             'name': self.name
         }
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         arr = self.name.split('_')
-        cmd = '_'.join([str(n).lower() for n in arr[:-1]])
-        # _helps = self.to_json()
-        # _helps.update({
-        #     'class': f'{self.__class__.__name__}',
-        #     'cmd': cmd,
-        #     'mode': 'RW' if self.io_mode_id == 1 else 'R',
-        #     'type': f'{self.__class__.__name__.replace("Service", "")}',
-        #     # 'bytes': self.data_bytes
-        # })
-        # return _helps
-        return {
+        txt = '_'.join([str(n).lower() for n in arr[:-1]])
+        kwargs = {
             'class': f'{self.__class__.__name__}',
-            'cmd': cmd,
+            'txt': txt,
             'mode': 'RW' if self.io_mode_id == 1 else 'R',
             'type': f'{self.__class__.__name__.replace("Service", "")}',
             # 'bytes': self.data_bytes
         }
-
-
-# class SAService:
-#     @classmethod
-#     def from_service(cls, service: SAServiceBase) -> SAServiceBase:
-#         raise NotImplementedError
-#
-#     def to_cmd_help(self):
-#         raise NotImplementedError
+        return SACmdHelp(**kwargs)
 
 
 class Enum16Service(SAServiceBase):
@@ -101,9 +128,19 @@ class Enum16Service(SAServiceBase):
     def read_value(self):
         return int.from_bytes(self.data_bytes[-2:], 'big')
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(Enum16Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        return _help
+
 
 class Enum16BitService(SAServiceBase):
     ID = 0x06
+
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(Enum16BitService, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        return _help
 
     def read_bit(self, bit_index: int) -> int:
         assert (bit_index <= 15) and (bit_index >= 0)
@@ -130,9 +167,10 @@ class UInt8Service(SAServiceBase):
     def read_min(self):
         return int.from_bytes(self.data_bytes[-1:], 'big')
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(UInt8Service, self).to_cmd_help()
-        _help.update({
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
             'max': self.data_bytes[-2],
             'min': self.data_bytes[-1]
         })
@@ -151,6 +189,15 @@ class UInt16Service(SAServiceBase):
     def read_min(self):
         return int.from_bytes(self.data_bytes[-2:], 'big')
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(UInt16Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
+
 
 class UInt32Service(SAServiceBase):
     ID = 0x0C
@@ -163,6 +210,15 @@ class UInt32Service(SAServiceBase):
 
     def read_min(self):
         return int.from_bytes(self.data_bytes[-4:], 'big')
+
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(UInt32Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
 
 
 class UInt64Service(SAServiceBase):
@@ -177,6 +233,15 @@ class UInt64Service(SAServiceBase):
     def read_min(self):
         return int.from_bytes(self.data_bytes[-8:], 'big')
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(UInt64Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
+
 
 class Int8Service(SAServiceBase):
     ID = 0x0F
@@ -189,6 +254,15 @@ class Int8Service(SAServiceBase):
 
     def read_min(self):
         return int.from_bytes(self.data_bytes[-1:], 'big', signed=True)
+
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(Int8Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
 
 
 class Int16Service(SAServiceBase):
@@ -203,6 +277,15 @@ class Int16Service(SAServiceBase):
     def read_min(self):
         return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(Int16Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
+
 
 class Int32Service(SAServiceBase):
     ID = 0x11
@@ -215,6 +298,15 @@ class Int32Service(SAServiceBase):
 
     def read_min(self):
         return int.from_bytes(self.data_bytes[-2:], 'big', signed=True)
+
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(Int32Service, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            'max': self.read_max(),
+            'min': self.read_min()
+        })
+        return _help
 
 
 class MDService(SAServiceBase):
@@ -230,6 +322,15 @@ class MDService(SAServiceBase):
     def read_day(self):
         return self.read_value()[1]
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(MDService, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            0: 'MONTH, 1~12',
+            1: 'DAY, 1~31'
+        })
+        return _help
+
 
 class HMService(SAServiceBase):
     ID = 0x15
@@ -243,6 +344,15 @@ class HMService(SAServiceBase):
 
     def read_minute(self):
         return self.read_value()[1]
+
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(HMService, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            0: 'HOUR, 0~23',
+            1: 'MINUTE, 0~59'
+        })
+        return _help
 
 
 class MSService(SAServiceBase):
@@ -258,8 +368,18 @@ class MSService(SAServiceBase):
     def read_second(self):
         return self.read_value()[1]
 
+    def to_cmd_help(self) -> SACmdHelp:
+        _help = super(MSService, self).to_cmd_help()
+        _help.update_kwargs_type(self.__class__.__name__.replace('Service', ''))
+        _help.update_kwargs_params({
+            0: 'MINUTE, 0~59',
+            1: 'SECOND, 0~59'
+        })
+        return _help
+
 
 class YMDHMSService(SAServiceBase):
+    """todo"""
     ID = 0x17
 
     def read_value(self):
@@ -267,6 +387,7 @@ class YMDHMSService(SAServiceBase):
 
 
 class YMDHMService(SAServiceBase):
+    """todo"""
     ID = 0x18
 
     def read_value(self):
@@ -274,6 +395,7 @@ class YMDHMService(SAServiceBase):
 
 
 class StringService(SAServiceBase):
+    """todo"""
     ID = 0x20
 
     def read_value(self):
@@ -310,6 +432,7 @@ def query_sa_data_type_dynamic_len(data_type_id: int):
 __all__ = [
     'query_sa_data_type_dynamic_len',
     'SADataValueType',
+    'SACmdHelp',
     'SAServiceBase',
     'Enum16Service',
     'Enum16BitService',

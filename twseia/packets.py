@@ -125,7 +125,7 @@ class SAInfoDevStatesPacket(_BasePacket, SAResponsePacket):
         pass
 
 
-class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
+class SARegisterPacket(_BasePacket, SAResponsePacket):
     class_id = None
     major_ver = None  # protocol major version
     minor_ver = None  # protocol minor version
@@ -142,7 +142,8 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
         packet = cls()
         packet.len = _pdu[0]
         # assert _pdu[1] == 0x00
-        packet.service_id = _pdu[1]
+        if _pdu[1] != 0x00:
+            raise ValueError(f'pdu service id invalid, {pdu}')
         packet.data_type_id = _pdu[2] >> 7  # PacketDataUnitType
         packet.class_id = _pdu[2] & 0x0F
         packet.major_ver = _pdu[3]
@@ -187,8 +188,6 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
             'class_name': SAClassID(self.class_id).name,
             'type_id': self.type_id,
             'type_name': SATypeIDEnum(self.type_id).name,
-            'service_id': self.service_id,
-            'service_name': SARegisterServiceIDEnum(self.service_id).name,
             'version': (self.major_ver, self.minor_ver),
             'fragment_offset': self.fragment_offset,
             'brand': self.brand,
@@ -197,20 +196,31 @@ class SAInfoRegisterPacket(_BasePacket, SAResponsePacket):
         }
 
 
-class SAInfoResponsePacket(_BasePacket):
+class SAInfoResponsePacket(SAResponsePacket):
     """TAISEIA Spec. Graph_35"""
+    len = None
+    type_id = None
+    service_id = None
+    data_bytes = None
+    checksum = None
 
     @classmethod
     def from_pdu(cls, pdu: list):
-        packet = super(SAInfoResponsePacket, cls).from_general_pdu(pdu=pdu)
-        if packet.service_id == SARegisterServiceIDEnum.REGISTRATION:
-            if packet.io_mode_id != SAServiceIOMode.READ:
-                raise ValueError(f'Packet io_mode_id {packet.io_mode_id} invalid')
-            return SAInfoRegisterPacket.from_pdu(pdu=pdu)
-        elif packet.service_id == SARegisterServiceIDEnum.READ_CURRENT_SERVICES_STATES:
-            return SAInfoDevStatesPacket.from_pdu(pdu=pdu)
-        else:
-            raise NotImplementedError
+        if not isinstance(pdu, list):
+            raise ValueError(f'pdu type invalid, {pdu}')
+        if pdu[0] != len(pdu):
+            raise ValueError(f'pdu len invalid, {pdu}')
+        if pdu[-1] != compute_pdu_checksum(pdu[:-1]):
+            raise ValueError(f'pdu checksum invalid, {pdu}')
+        if pdu[1] != 0x00:
+            raise ValueError(f'pdu type_id invalid, {pdu}')
+        packet = cls()
+        packet.len = pdu[0]
+        packet.type_id = pdu[1]
+        packet.service_id = pdu[2] & 0x7F
+        packet.data_bytes = pdu[3:-1]
+        packet.checksum = pdu[-1]
+        return packet
 
 
 class SAStateReadRequestPacket(_BasePacket):
@@ -316,7 +326,7 @@ __all__ = [
     'SAInfoRequestPacket',
     'SAInfoResponsePacket',
     'SAStateReadRequestPacket',
-    'SAInfoRegisterPacket',
+    'SARegisterPacket',
     'SAInfoDevStatesPacket',
     'SAStateReadResponsePacket',
     'SAStateWriteRequestPacket',

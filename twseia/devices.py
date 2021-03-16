@@ -8,6 +8,7 @@ from .services import Enum16BitService
 from .services import MDService
 from .services import SAServiceBase
 from .services import Enum16Service
+from .services import SACmdHelp
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +24,10 @@ class _PowerService(Enum16Service):
     OFF = 0
     ON = 1
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(_PowerService, self).to_cmd_help()
-        _help.update({
-            'values': {
+        _help.update_kwargs({
+            'params': {
                 ACPowerService.OFF: 'ON',
                 ACPowerService.ON: 'OFF'
             }
@@ -600,14 +601,14 @@ class DHOpModeService(Enum16Service):
     0:自動除濕,1:設定除濕,2:連續除濕,3:乾衣,4:空氣清淨,5:防霉防?,6:送風,7:人體舒適,8:低濕乾燥
 
     """
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHOpModeService, self).to_cmd_help()
         _values = {}
         for e in list(DHOpModeIDEnum):
             _values[e.value] = e.name
-        _help.update({
+        _help.update_kwargs({
             'type': 'Enum16',
-            'values': _values
+            'params': _values
         })
         return _help
 

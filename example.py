@@ -11,7 +11,7 @@ import socket
 # import serial
 import serial.threaded
 import time
-import struct
+# import struct
 
 
 class SerialToNet(serial.threaded.Protocol):
@@ -29,7 +29,7 @@ class SerialToNet(serial.threaded.Protocol):
             # self.socket.sendall(data)
             # sys.stderr.write(f'serial data recv: {data_bytes}, {len(data_bytes)}, {type(data_bytes)}\n')
             self.buffer += list(data_bytes)
-            if len(self.buffer) > 0 and self.buffer[0] == len(self.buffer):
+            if 0 < len(self.buffer) == self.buffer[0]:
                 sys.stderr.write(f'buffer {self.buffer}\n')
                 response = ', '.join([f'{n}' for n in self.buffer]) + '\n'
                 sys.stderr.write(f'{response}\n')

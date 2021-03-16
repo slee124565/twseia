@@ -14,7 +14,7 @@ class TestSAInfoRegisterPackets(unittest.TestCase):
 
     def test_sa_info_register_packet(self):
         pdu = kHITACHI_AC_RAD_50NK_REGISTER_PDU
-        packet = twseia.SAInfoRegisterPacket.from_pdu(pdu=pdu)
+        packet = twseia.SARegisterPacket.from_pdu(pdu=pdu)
         self.assertEqual(packet.type_id, twseia.SATypeIDEnum.AIR_CONDITIONER)
         self.assertEqual(packet.class_id, twseia.SAClassID.HOME_DEVICE)
         self.assertEqual(packet.data_type_id, twseia.SAPacketDataLenType.FIXED_LEN)

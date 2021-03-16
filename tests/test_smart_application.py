@@ -12,7 +12,7 @@ class TestSmartApplication(unittest.TestCase):
     def setUp(self) -> None:
         self.sa = twseia.SmartApplication()
         resp = self.sa.register()
-        self.assertTrue(isinstance(resp, twseia.SAInfoRegisterPacket))
+        self.assertTrue(isinstance(resp, twseia.SARegisterPacket))
 
     def test_read_service(self):
         for service in self.sa.services:

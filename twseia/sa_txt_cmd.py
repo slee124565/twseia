@@ -1,10 +1,10 @@
 from .devices import ACServiceIDEnum
 from .services import SAServiceBase
-from .packets import SAInfoRegisterPacket
+from .packets import SARegisterPacket
 
 
-def read_sa_cmd_helps(register: SAInfoRegisterPacket):
-    assert isinstance(register, SAInfoRegisterPacket)
+def read_sa_cmd_helps(register: SARegisterPacket):
+    assert isinstance(register, SARegisterPacket)
     _helps = []
     for _service in register.services:
         assert isinstance(_service, SAServiceBase)
