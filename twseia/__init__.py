@@ -112,7 +112,7 @@ def parsing_dehumidifier_services_response(pdu: list, is_fixed_len_pdu: bool = T
     return _services
 
 
-def create_current_states_cmd():
+def create_read_all_states_cmd():
     return SAInfoRequestPacket.create(
         sa_info_type=SARegisterServiceIDEnum.READ_CURRENT_SERVICES_STATES
     ).to_pdu()
@@ -132,3 +132,20 @@ def parsing_dehumidifier_all_states_response(pdu: list, is_fixed_len_pdu: bool =
         response.append({'name': service.name, 'value': service.read_value()})
         n += 3
     return response
+
+
+def create_read_state_cmd(type_id: int, service_id: int) -> list:
+    """"""
+    return SAStateReadRequestPacket.create(
+        type_id=type_id,
+        service_id=service_id
+    ).to_pdu()
+
+
+def parsing_read_state_response(pdu: list, is_fixed_len_pdu: bool = True) -> SAServiceBase:
+    """"""
+    if not is_fixed_len_pdu:
+        raise NotImplementedError
+
+    _service = SAServiceBase.from_fixed_len_pdu(pdu=pdu)
+    return _service.read_value()

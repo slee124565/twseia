@@ -11,6 +11,8 @@ import socket
 # import serial
 import serial.threaded
 import time
+
+
 # import struct
 
 
@@ -218,7 +220,7 @@ it waits for the next connect.
                             break
                         # ser.write(data)
                         sys.stderr.write(f'net data: {data}, {len(data)}\n')
-                        txt_cmd = data.decode('utf-8').replace('\r','').replace('\n','')
+                        txt_cmd = data.decode('utf-8').replace('\r', '').replace('\n', '')
                         if txt_cmd.lower() == 'exit':
                             break
                         if txt_cmd.find('0x') >= 0:

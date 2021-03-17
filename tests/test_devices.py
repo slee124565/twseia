@@ -25,7 +25,7 @@ class TestSmartApplication(unittest.TestCase):
         self.assertEqual(register, [0x06, 0x00, 0x06, 0xFF, 0xFF, 0x00])
         register = twseia.create_read_supported_services_cmd()
         self.assertEqual(register, [0x06, 0x00, 0x07, 0xFF, 0xFF, 0x01])
-        register = twseia.create_current_states_cmd()
+        register = twseia.create_read_all_states_cmd()
         self.assertEqual(register, [0x06, 0x00, 0x08, 0xFF, 0xFF, 0x0E])
 
     def test_parsing_sa_register_response(self):
@@ -119,11 +119,26 @@ class TestSmartApplication(unittest.TestCase):
         pass
 
     def test_create_read_state_cmd(self):
-        pass
+        register = twseia.SARegisterPacket.from_pdu(pdu=kPANASONIC_FYTW_08810115_REGISTER_PDU)
+        for service in register.services:
+            self.assertTrue(isinstance(service, twseia.SAServiceBase))
+            assert isinstance(service, twseia.SAServiceBase)
+            cmd = twseia.create_read_state_cmd(
+                type_id=register.type_id,
+                service_id=service.service_id
+            )
+            self.assertTrue(isinstance(cmd, list))
+            self.assertTrue(len(cmd) == 6 and cmd[0] == 6)
+            self.assertEqual(cmd[1], register.type_id)
+            self.assertEqual(cmd[2], service.service_id & 0x7F)
+            self.assertEqual(cmd[3], 0xFF)
+            self.assertEqual(cmd[4], 0xFF)
+            self.assertEqual(cmd[-1], twseia.compute_pdu_checksum(cmd[:-1]))
+            logging.debug(f'read_state_cmd: {cmd}')
 
     # def test_parsing_read_state_response(self):
     #     pass
-    #
+
     # def test_create_write_state_cmd(self):
     #     pass
     #
