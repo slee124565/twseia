@@ -51,6 +51,7 @@ class ACFanLevelService(Enum16Service):
 
 class ACTemperatureCfgService(UInt8Service):
     """溫度設定功能"""
+    unit = 'ºC'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTemperatureCfgService, self).to_cmd_help()
@@ -63,10 +64,11 @@ class ACTemperatureCfgService(UInt8Service):
 
 class ACTemperatureService(Int8Service):
     """室內溫度顯示功能"""
+    unit = 'ºC'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTemperatureService, self).to_cmd_help()
-        _help.update_kwargs_unit('C')
+        _help.update_kwargs_unit('ºC')
         return _help
 
 
@@ -83,6 +85,7 @@ class ACComfortableService(Enum16Service):
 
 class ACComfortableTimerService(UInt16Service):
     """舒眠模式剩餘時間設定功能"""
+    unit = 'Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACComfortableTimerService, self).to_cmd_help()
@@ -117,6 +120,7 @@ class ACAirCleanModeService(Enum16Service):
 
 class ACClockOnService(HMService):
     """開機時間設定功能"""
+    unit = 'Hr/Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACClockOnService, self).to_cmd_help()
@@ -130,6 +134,7 @@ class ACClockOnService(HMService):
 
 class ACClockOffService(HMService):
     """關機時間設定功能"""
+    unit = 'Hr/Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACClockOffService, self).to_cmd_help()
@@ -143,6 +148,7 @@ class ACClockOffService(HMService):
 
 class ACTimerOnService(UInt16Service):
     """定時開機功能"""
+    unit = 'Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTimerOnService, self).to_cmd_help()
@@ -155,6 +161,7 @@ class ACTimerOnService(UInt16Service):
 
 class ACTimerOffService(UInt16Service):
     """定時關機功能"""
+    unit = 'Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTimerOffService, self).to_cmd_help()
@@ -189,6 +196,7 @@ class ACFanUpdownService(Enum16Service):
 
 class ACFanUpdownLevelService(Enum16Service):
     """設定上下吹風轉向段數功能"""
+    unit = '段'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACFanUpdownLevelService, self).to_cmd_help()
@@ -212,6 +220,7 @@ class ACFanSwingService(Enum16Service):
 
 class ACFanSwingLevelService(Enum16Service):
     """設定左右吹風轉向段數功能"""
+    unit = '段'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACFanSwingLevelService, self).to_cmd_help()
@@ -227,7 +236,6 @@ class ACFilterCleanNotifyService(Enum16Service):
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACFilterCleanNotifyService, self).to_cmd_help()
-        _help.update_kwargs_unit('%')
         _help.update_kwargs_params({
             'READ': {0: '正常', 1: '須清洗'}, 'WRITE': {0: '重置狀態'}
         })
@@ -236,6 +244,7 @@ class ACFilterCleanNotifyService(Enum16Service):
 
 class ACDehumidifierCfgService(UInt8Service):
     """溼度設定功能"""
+    unit = '%'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACDehumidifierCfgService, self).to_cmd_help()
@@ -248,6 +257,7 @@ class ACDehumidifierCfgService(UInt8Service):
 
 class ACHumidityService(UInt8Service):
     """室內溼度顯示功能"""
+    unit = '%'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACHumidityService, self).to_cmd_help()
@@ -337,7 +347,6 @@ class ACPowerLimitOpService(UInt16Service):
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACPowerLimitOpService, self).to_cmd_help()
-        _help.update_kwargs_unit('%')
         _help.update_kwargs_params({
             0: '關閉(不限電模式)', '非0': '額定運轉電流百分比'
         })
@@ -390,33 +399,37 @@ class ACMoisturizeModeService(Enum16Service):
 
 class ACOutdoorTemperatureService(Int8Service):
     """室外溫度功能"""
+    unit = 'ºC'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACOutdoorTemperatureService, self).to_cmd_help()
-        _help.update_kwargs_unit('C')
+        _help.update_kwargs_unit('ºC')
         return _help
 
 
 class ACIndoorUnitWattService(UInt16Service):
     """室內機能力"""
+    unit = '0.1kW'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACIndoorUnitWattService, self).to_cmd_help()
-        _help.update_kwargs_unit('0.1k')
+        _help.update_kwargs_unit('0.1kW')
         return _help
 
 
 class ACOutdoorUnitWattService(UInt16Service):
     """室外機能力"""
+    unit = '0.1kW'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACOutdoorUnitWattService, self).to_cmd_help()
-        _help.update_kwargs_unit('0.1k')
+        _help.update_kwargs_unit('0.1kW')
         return _help
 
 
 class ACOutdoorUnitCurrentService(UInt16Service):
     """室外機運轉電流"""
+    unit = '0.1Amp'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACOutdoorUnitCurrentService, self).to_cmd_help()
@@ -424,11 +437,12 @@ class ACOutdoorUnitCurrentService(UInt16Service):
         return _help
 
 
-class ACOutdoorUnitVoltateService(UInt16Service):
+class ACOutdoorUnitVoltageService(UInt16Service):
     """室外機運轉電壓"""
+    unit = 'V'
 
     def to_cmd_help(self) -> SACmdHelp:
-        _help = super(ACOutdoorUnitVoltateService, self).to_cmd_help()
+        _help = super(ACOutdoorUnitVoltageService, self).to_cmd_help()
         _help.update_kwargs_unit('V')
         return _help
 
@@ -443,6 +457,7 @@ class ACOutdoorUnitPowerFactorService(UInt16Service):
 
 class ACOutdoorUnitInstantWattService(UInt16Service):
     """室外機即時功率"""
+    unit = 'W'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACOutdoorUnitInstantWattService, self).to_cmd_help()
@@ -451,9 +466,9 @@ class ACOutdoorUnitInstantWattService(UInt16Service):
 
 
 class ACTotalWattService(UInt16Service):
-    """室外機累積用電量
-    R:目前累積電量,W:0:清除電量累積
-    """
+    """室外機累積用電量"""
+    # R:目前累積電量,W:0:清除電量累積
+    unit = '0.1kWh'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTotalWattService, self).to_cmd_help()
@@ -465,39 +480,38 @@ class ACTotalWattService(UInt16Service):
 
 
 class ACDisplayErrService(Enum16BitService):
-    """錯誤訊息顯示功能: 0:正常,非0:故障訊息碼"""
+    """錯誤訊息顯示功能"""
     pass
 
 
 class ACErrHistory1Service(Enum16BitService):
-    """故障履歷1: 0:正常,非0:故障訊息碼"""
+    """故障履歷1"""
     pass
 
 
 class ACErrHistory2Service(Enum16BitService):
-    """故障履歷2: 0:正常,非0:故障訊息碼"""
+    """故障履歷2"""
     pass
 
 
 class ACErrHistory3Service(Enum16BitService):
-    """故障履歷3: 0:正常,非0:故障訊息碼"""
+    """故障履歷3"""
     pass
 
 
 class ACErrHistory4Service(Enum16BitService):
-    """故障履歷4: 0:正常,非0:故障訊息碼"""
+    """故障履歷4"""
     pass
 
 
 class ACErrHistory5Service(Enum16BitService):
-    """故障履歷5: 0:正常,非0:故障訊息碼"""
+    """故障履歷5"""
     pass
 
 
 class ACMaintenanceAccuOpHourService(UInt16Service):
-    """定期保養累積運轉小時功能
-    R:讀取目前累計運轉小時數, W:0:重置運轉小時數
-    """
+    """定期保養累積運轉小時功能"""
+    # R:讀取目前累計運轉小時數, W:0:重置運轉小時數
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACMaintenanceAccuOpHourService, self).to_cmd_help()
@@ -508,9 +522,8 @@ class ACMaintenanceAccuOpHourService(UInt16Service):
 
 
 class ACFilterAccuOpHourService(UInt16Service):
-    """濾網清洗累積運轉小時功能
-    R:讀取目前累計運轉小時數, W:0:重置運轉小時數
-    """
+    """濾網清洗累積運轉小時功能"""
+    # R:讀取目前累計運轉小時數, W:0:重置運轉小時數
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACFilterAccuOpHourService, self).to_cmd_help()
@@ -532,9 +545,8 @@ class ACSysYearService(UInt16Service):
 
 
 class ACSysMonthDayService(MDService):
-    """系統時間-月/日設定功能
-    電力累計計算用-月/日設定功能，顯示/設定 月/日Byte3代表月、Byte4代表日
-    """
+    """系統時間-月/日設定功能"""
+    # 電力累計計算用-月/日設定功能，顯示/設定 月/日Byte3代表月、Byte4代表日
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACSysMonthDayService, self).to_cmd_help()
@@ -545,9 +557,9 @@ class ACSysMonthDayService(MDService):
 
 
 class ACMonthlyWattService(UInt16Service):
-    """月累積用電量
-    R:目前累積電量,下達命令時, Byte4表示1~12月
-    """
+    """月累積用電量"""
+    # R:目前累積電量,下達命令時, Byte4表示1~12月
+    unit = '0.1kWh'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACMonthlyWattService, self).to_cmd_help()
@@ -559,9 +571,9 @@ class ACMonthlyWattService(UInt16Service):
 
 
 class ACTimerOff2Service(UInt16Service):
-    """定時開關機功能
-    定時關機時間(日立定速及窗型機使用)，冷氣於開機狀態時,此功能代表定時關機時間,反之冷氣於關機狀態時,代表定時開機時間
-    """
+    """定時開關機功能"""
+    # 定時關機時間(日立定速及窗型機使用)，冷氣於開機狀態時,此功能代表定時關機時間,反之冷氣於關機狀態時,代表定時開機時間
+    unit = 'Min'
 
     def to_cmd_help(self) -> SACmdHelp:
         _help = super(ACTimerOff2Service, self).to_cmd_help()
@@ -610,7 +622,7 @@ class ACServiceIDEnum(enum.IntEnum):
     INDOOR_UNIT_WATT_R = 0x22
     OUTDOOR_UNIT_WATT_R = 0x23
     OUTDOOR_UNIT_CURRENT_R = 0x24
-    OUTDOOR_UNIT_VOLTATE_R = 0x25
+    OUTDOOR_UNIT_VOLTAGE_R = 0x25
     OUTDOOR_UNIT_POWER_FACTOR_R = 0x26
     OUTDOOR_UNIT_INSTANT_WATT_R = 0x27
     TOTAL_WATT_RW = 0x28
@@ -713,7 +725,7 @@ class AirConditioner(SADevice):
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_CURRENT_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
-        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_VOLTATE_R:
+        elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_VOLTAGE_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)
         elif _service.service_id == ACServiceIDEnum.OUTDOOR_UNIT_POWER_FACTOR_R:
             _service = UInt16Service.from_fixed_len_pdu(pdu=_pdu)

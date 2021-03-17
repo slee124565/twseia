@@ -45,6 +45,7 @@ class DHOpModeService(Enum16Service):
 
 class DHOpTimerService(UInt8Service):
     """運轉時間設定功能"""
+    unit = 'Hr'
 
     def to_cmd_help(self):
         _help = super(DHOpTimerService, self).to_cmd_help()
@@ -58,6 +59,7 @@ class DHOpTimerService(UInt8Service):
 
 class DHHumidityCfgService(UInt8Service):
     """相對溼度設定功能"""
+    unit = '%'
 
     def to_cmd_help(self):
         _help = super(DHHumidityCfgService, self).to_cmd_help()
@@ -92,6 +94,7 @@ class DHDryClotheLevelService(Enum16Service):
 
 class DHTemperatureService(Int8Service):
     """室內溫度顯示功能, read only"""
+    unit = 'ºC'
 
     def to_cmd_help(self):
         _help = super(DHTemperatureService, self).to_cmd_help()
@@ -101,6 +104,7 @@ class DHTemperatureService(Int8Service):
 
 class DHHumidityService(UInt8Service):
     """室內溼度顯示功能, read only"""
+    unit = '%'
 
     def to_cmd_help(self):
         _help = super(DHHumidityService, self).to_cmd_help()
@@ -253,6 +257,7 @@ class DHHumidityHighNotifyService(Enum16Service):
 
 class DHHumidityHighCfgService(UInt16Service):
     """高濕度值定義設定功能"""
+    unit = '%'
 
     def to_cmd_help(self):
         _help = super(DHHumidityHighCfgService, self).to_cmd_help()
@@ -271,7 +276,6 @@ class DHKeypadLockService(Enum16Service):
         _help.update_kwargs_params({
             0: '關閉按鍵鎖定', 1: '開啟按鍵鎖定'
         })
-        _help.update_kwargs_unit('%')
         return _help
 
 
@@ -305,6 +309,7 @@ class DHSaaCtrlAudioService(Enum16Service):
 
 class DHOpCurrentService(Enum16Service):
     """運轉電流"""
+    unit = '0.1Amp'
 
     def to_cmd_help(self):
         _help = super(DHOpCurrentService, self).to_cmd_help()
@@ -314,6 +319,7 @@ class DHOpCurrentService(Enum16Service):
 
 class DHOpVoltageService(UInt16Service):
     """運轉電壓"""
+    unit = 'V'
 
     def to_cmd_help(self):
         _help = super(DHOpVoltageService, self).to_cmd_help()
@@ -328,6 +334,7 @@ class DHOpPowerFactorService(UInt16Service):
 
 class DHOpPowerWattService(UInt16Service):
     """即時功率"""
+    unit = 'W'
 
     def to_cmd_help(self):
         _help = super(DHOpPowerWattService, self).to_cmd_help()
@@ -337,6 +344,7 @@ class DHOpPowerWattService(UInt16Service):
 
 class DHTotalWattService(UInt16Service):
     """累積用電量"""
+    unit = '0.1kWh'
 
     def to_cmd_help(self):
         _help = super(DHTotalWattService, self).to_cmd_help()

@@ -93,6 +93,7 @@ class SAServiceBase:
     data_type_id = None
     data_bytes = None
     name = None
+    unit = None
 
     @classmethod
     def from_fixed_len_pdu(cls, pdu: list):
@@ -148,10 +149,13 @@ class SAServiceBase:
         return self.data_bytes
 
     def to_state_report(self):
-        return {
+        report = {
             'name': self.name,
             'value': self.read_value(),
         }
+        if self.unit:
+            report['unit'] = self.unit
+        return report
 
 
 class Enum16Service(SAServiceBase):
