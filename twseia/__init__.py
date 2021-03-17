@@ -1,4 +1,4 @@
-
+import logging
 from .constants import *
 from .packets import *
 from .devices import *
@@ -6,6 +6,8 @@ from .services import *
 from .smart_application import *
 from .sa_txt_cmd import *
 from .utils import *
+from .dehumidifier import *
+from .air_conditioner import *
 
 
 def create_sa_register_cmd():
@@ -71,7 +73,7 @@ def parsing_sa_brand_response(pdu: list) -> str:
     packet = SAInfoResponsePacket.from_pdu(pdu=pdu)
     if packet.service_id != SARegisterServiceIDEnum.READ_BRAND:
         raise ValueError(f'pdu service id invalid, {pdu}')
-    return bytearray(packet.data_bytes).decode('utf-8')
+    return bytearray(packet.data_bytes[:-1]).decode('utf-8')
 
 
 def create_read_model_cmd():
@@ -84,7 +86,7 @@ def parsing_sa_model_response(pdu: list) -> str:
     packet = SAInfoResponsePacket.from_pdu(pdu=pdu)
     if packet.service_id != SARegisterServiceIDEnum.READ_MODEL:
         raise ValueError(f'pdu service id invalid, {pdu}')
-    return bytearray(packet.data_bytes).decode('utf-8')
+    return bytearray(packet.data_bytes[:-1]).decode('utf-8')
 
 
 def create_read_supported_services_cmd():
@@ -93,23 +95,21 @@ def create_read_supported_services_cmd():
     ).to_pdu()
 
 
-def parsing_dehumidifier_services_response(pdu: list) -> list:
-    """
-    40 len, 0 type_id, 7 service_id,
-    128, 0, 3,
-    129, 0, 127,
-    130, 0, 12,
-    132, 0, 6,
-    7, 0, 0,
-    137, 0, 15,
-    10, 0, 0,
-    141, 0, 3,
-    142, 0, 15,
-    18, 0, 0,
-    152, 0, 3,
-    157, 0, 0,
-    206 checksum
-    """
+def parsing_dehumidifier_services_response(pdu: list, is_fixed_len_pdu: bool = True) -> list:
+    """"""
+    packet = SAInfoResponsePacket.from_pdu(pdu=pdu)
+    if not is_fixed_len_pdu:
+        raise NotImplementedError
+    n = 0
+    _services = []
+    logging.debug(f'data_bytes {packet.data_bytes}')
+    while n < len(packet.data_bytes):
+        service = Dehumidifier.convert_dev_specific_service(
+            pdu=packet.data_bytes[n:n+3], is_fixed_len_pdu=is_fixed_len_pdu)
+        logging.debug(f'cmd_help {service.to_cmd_help()}')
+        _services.append(service.to_cmd_help().to_json())
+        n += 3
+    return _services
 
 
 def create_current_states_cmd():
@@ -118,20 +118,17 @@ def create_current_states_cmd():
     ).to_pdu()
 
 
-def parsing_sa_all_states_response(pdu: list):
-    """
-    40 len, 0 type_id, 8 service_id,
-    0, 0, 0,
-    1, 0, 0,
-    2, 0, 0,
-    4, 0, 0,
-    7, 0, 55,
-    9, 0, 0,
-    10, 0, 0,
-    13, 0, 1,
-    14, 0, 0,
-    18, 0, 0,
-    24, 0, 1,
-    29, 14, 40,
-    38 checksum
-    """
+def parsing_dehumidifier_all_states_response(pdu: list, is_fixed_len_pdu: bool = True):
+    """"""
+    packet = SAInfoResponsePacket.from_pdu(pdu=pdu)
+    if not is_fixed_len_pdu:
+        raise NotImplementedError
+    n = 0
+    response = []
+    while n < len(packet.data_bytes):
+        service = Dehumidifier.convert_dev_specific_service(
+            pdu=packet.data_bytes[n:n+3], is_fixed_len_pdu=is_fixed_len_pdu)
+        # service = service.to_cmd_help()
+        response.append({'name': service.name, 'value': service.read_value()})
+        n += 3
+    return response

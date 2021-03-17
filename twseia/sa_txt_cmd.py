@@ -1,4 +1,3 @@
-from .devices import ACServiceIDEnum
 from .services import SAServiceBase
 from .packets import SARegisterPacket
 

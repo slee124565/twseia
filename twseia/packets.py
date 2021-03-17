@@ -5,8 +5,8 @@ from .constants import SARegisterServiceIDEnum
 from .constants import SAPacketDataLenType
 from .utils import compute_pdu_checksum
 from .services import SADataValueType
-from .devices import AirConditioner
-from .devices import Dehumidifier
+from .air_conditioner import AirConditioner
+from .dehumidifier import Dehumidifier
 
 logger = logging.getLogger(__name__)
 
