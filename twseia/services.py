@@ -105,6 +105,8 @@ class SAServiceBase:
         service.io_mode_id = _pdu[0] >> 7
         service.service_id = _pdu[0] & 0x7F
         service.data_bytes = _pdu[1:]
+        service.name = cls.__doc__
+
         return service
 
     @classmethod
@@ -144,6 +146,12 @@ class SAServiceBase:
 
     def read_value(self):
         return self.data_bytes
+
+    def to_state_report(self):
+        return {
+            'name': self.name,
+            'value': self.read_value(),
+        }
 
 
 class Enum16Service(SAServiceBase):

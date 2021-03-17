@@ -129,7 +129,7 @@ def parsing_dehumidifier_all_states_response(pdu: list, is_fixed_len_pdu: bool =
         service = Dehumidifier.convert_dev_specific_service(
             pdu=packet.data_bytes[n:n+3], is_fixed_len_pdu=is_fixed_len_pdu)
         # service = service.to_cmd_help()
-        response.append({'name': service.name, 'value': service.read_value()})
+        response.append({'name': service.name, 'value': service.read_value(), 'unit': None})
         n += 3
     return response
 
@@ -142,10 +142,16 @@ def create_read_state_cmd(type_id: int, service_id: int) -> list:
     ).to_pdu()
 
 
-def parsing_read_state_response(pdu: list, is_fixed_len_pdu: bool = True) -> SAServiceBase:
+def parsing_read_state_response(type_id: int, pdu: list, is_fixed_len_pdu: bool = True) -> dict:
     """"""
     if not is_fixed_len_pdu:
         raise NotImplementedError
 
-    _service = SAServiceBase.from_fixed_len_pdu(pdu=pdu)
-    return _service.read_value()
+    if type_id == SATypeIDEnum.DEHUMIDIFIER:
+        packet = SAStateReadResponsePacket.from_pdu(pdu=pdu)
+        if packet.type_id != type_id:
+            raise ValueError(f'pdu type_id invalid, {pdu}')
+        _service = Dehumidifier.convert_dev_specific_service(pdu=pdu[2:-1], is_fixed_len_pdu=True)
+        return _service.to_state_report()
+    else:
+        raise NotImplementedError

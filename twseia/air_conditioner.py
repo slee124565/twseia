@@ -751,7 +751,7 @@ class AirConditioner(SADevice):
             logger.warning(f'Unknown {cls.__name__} service_id {_service.service_id}')
             _service = SAServiceBase.from_fixed_len_pdu(pdu=pdu)
 
-        _service.name = ACServiceIDEnum(_service.service_id).name
+        # _service.name = ACServiceIDEnum(_service.service_id).name
         return _service
 
 

@@ -412,7 +412,7 @@ class DHServiceIDEnum(enum.IntEnum):
 
 class Dehumidifier(SADevice):
     @classmethod
-    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
+    def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool = True) -> SAServiceBase:
         if not isinstance(pdu, list) or len(pdu) < 3:
             raise ValueError(f'service pdu invalid, {pdu}')
         if not is_fixed_len_pdu:
@@ -496,7 +496,7 @@ class Dehumidifier(SADevice):
             logger.warning(f'Unknown {cls.__name__} service_id {_service.service_id}')
             _service = SAServiceBase.from_fixed_len_pdu(pdu=pdu)
 
-        _service.name = DHServiceIDEnum(_service.service_id).name
+        # _service.name = DHServiceIDEnum(_service.service_id).name
         return _service
 
 

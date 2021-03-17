@@ -136,8 +136,31 @@ class TestSmartApplication(unittest.TestCase):
             self.assertEqual(cmd[-1], twseia.compute_pdu_checksum(cmd[:-1]))
             logging.debug(f'read_state_cmd: {cmd}')
 
-    # def test_parsing_read_state_response(self):
-    #     pass
+    def test_parsing_read_state_response(self):
+        # 6, 255, 1, 0, 4, 252
+        states_dataset = [
+            [6, 4, 0, 0, 0, 2],
+            [6, 4, 1, 0, 0, 3],
+            [6, 4, 2, 0, 0, 0],
+            [6, 4, 4, 0, 0, 6],
+            [6, 4, 7, 0, 56, 61],
+            [6, 4, 9, 0, 0, 11],
+            [6, 4, 10, 0, 0, 8],
+            [6, 4, 13, 0, 1, 14],
+            [6, 4, 14, 0, 0, 12],
+            [6, 4, 18, 0, 0, 16],
+            [6, 4, 24, 0, 1, 27],
+            [6, 4, 29, 14, 40, 57]
+        ]
+        for pdu in states_dataset:
+            logging.debug(f'pdu {pdu}')
+            report = twseia.parsing_read_state_response(
+                type_id=twseia.SATypeIDEnum.DEHUMIDIFIER.value,
+                pdu=pdu)
+            self.assertTrue(isinstance(report, dict))
+            self.assertTrue(report.get('name') is not None)
+            self.assertTrue(report.get('value') is not None)
+            logging.debug(f'{report}')
 
     # def test_create_write_state_cmd(self):
     #     pass
