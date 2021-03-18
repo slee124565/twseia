@@ -166,7 +166,7 @@ it waits for the next connect.
     try:
         ser.open()
     except serial.SerialException as e:
-        sys.stderr.write('Could not open serial port {}: {}\n'.format(ser.name, e))
+        sys.stderr.write('Could not open serial port {}: {}\n'.format(ser.description, e))
         sys.exit(1)
 
     ser_to_net = SerialToNet()

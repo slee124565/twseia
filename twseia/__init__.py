@@ -9,6 +9,15 @@ from .utils import *
 from .dehumidifier import *
 from .air_conditioner import *
 
+logger = logging.getLogger(__name__)
+
+
+def read_sa_type_id_dict() -> dict:
+    dev_type_id_dict = {}
+    for n in list(SATypeIDEnum):
+        dev_type_id_dict[n.name] = n.value
+    return dev_type_id_dict
+
 
 def create_sa_register_cmd():
     return SAInfoRequestPacket.create(
@@ -18,6 +27,16 @@ def create_sa_register_cmd():
 
 def parsing_sa_register_response(pdu: list) -> SARegisterPacket:
     return SARegisterPacket.from_pdu(pdu=pdu)
+
+
+def parsing_sa_cmd_helps_from_register_response(pdu: list) -> list:
+    register = SARegisterPacket.from_pdu(pdu)
+    report = []
+    for service in register.services:
+        _help = service.to_cmd_help()
+        assert isinstance(_help, SACmdHelp)
+        report.append(_help.to_json())
+    return report
 
 
 def create_sa_class_id_cmd():
@@ -129,7 +148,10 @@ def parsing_dehumidifier_all_states_response(pdu: list, is_fixed_len_pdu: bool =
         service = Dehumidifier.convert_dev_specific_service(
             pdu=packet.data_bytes[n:n+3], is_fixed_len_pdu=is_fixed_len_pdu)
         # service = service.to_cmd_help()
-        response.append({'name': service.name, 'value': service.read_value(), 'unit': None})
+        report = {'description': service.description, 'value': service.read_value()}
+        if service.unit is not None:
+            report['unit'] = service.unit
+        response.append(report)
         n += 3
     return response
 
@@ -142,16 +164,64 @@ def create_read_state_cmd(type_id: int, service_id: int) -> list:
     ).to_pdu()
 
 
+def create_read_state_cmd_from_txt(type_id: int, cmd_txt: str) -> list:
+    if type_id == SATypeIDEnum.DEHUMIDIFIER:
+        service_id = Dehumidifier.convert_cmd_txt_to_service_id(cmd_txt=cmd_txt)
+    elif type_id == SATypeIDEnum.AIR_CONDITIONER:
+        service_id = AirConditioner.convert_cmd_txt_to_service_id(cmd_txt=cmd_txt)
+    else:
+        raise NotImplementedError
+
+    return SAStateReadRequestPacket.create(
+        type_id=type_id, service_id=service_id
+    ).to_pdu()
+
+
 def parsing_read_state_response(type_id: int, pdu: list, is_fixed_len_pdu: bool = True) -> dict:
     """"""
     if not is_fixed_len_pdu:
         raise NotImplementedError
 
     if type_id == SATypeIDEnum.DEHUMIDIFIER:
-        packet = SAStateReadResponsePacket.from_pdu(pdu=pdu)
-        if packet.type_id != type_id:
-            raise ValueError(f'pdu type_id invalid, {pdu}')
-        _service = Dehumidifier.convert_dev_specific_service(pdu=pdu[2:-1], is_fixed_len_pdu=True)
-        return _service.to_state_report()
+        dev_cls = Dehumidifier
+    elif type_id == SATypeIDEnum.AIR_CONDITIONER:
+        dev_cls = AirConditioner
     else:
         raise NotImplementedError
+
+    assert isinstance(dev_cls, SADevice)
+    packet = SAStateReadResponsePacket.from_pdu(pdu=pdu)
+    if packet.type_id != type_id:
+        raise ValueError(f'pdu type_id invalid, {pdu}')
+    _service = dev_cls.convert_dev_specific_service(pdu=pdu[2:-1], is_fixed_len_pdu=True)
+    return _service.to_state_report()
+
+
+def create_write_state_cmd_from_txt(type_id: int, cmd_txt: str, cmd_value: int) -> list:
+    """"""
+    if type_id == SATypeIDEnum.DEHUMIDIFIER:
+        service_id = Dehumidifier.convert_cmd_txt_to_service_id(cmd_txt=cmd_txt)
+    elif type_id == SATypeIDEnum.AIR_CONDITIONER:
+        service_id = AirConditioner.convert_cmd_txt_to_service_id(cmd_txt=cmd_txt)
+    else:
+        raise NotImplementedError
+
+    return SAStateWriteRequestPacket.create(
+        type_id=type_id, service_id=service_id, value=cmd_value
+    ).to_pdu()
+
+
+def create_write_cmd_from_txt(dev_txt: str, cmd_txt: str, value_txt: str) -> list:
+    """"""
+    if not f'{value_txt}'.isnumeric():
+        raise ValueError(f'value_txt not numeric, {value_txt}')
+    dev_type_id_dict = {}
+    for n in list(SATypeIDEnum):
+        dev_type_id_dict[n.name] = n.value
+    logger.debug(f'{dev_type_id_dict.keys()}')
+    _name = dev_txt.upper()
+    if _name not in dev_type_id_dict.keys():
+        raise ValueError(f'dev_txt invalid, {dev_txt}')
+    type_id = dev_type_id_dict[_name]
+    return create_write_state_cmd_from_txt(
+        type_id=type_id, cmd_txt=cmd_txt, cmd_value=int(value_txt))

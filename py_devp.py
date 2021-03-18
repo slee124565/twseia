@@ -1,5 +1,12 @@
 from tests.sample_pdus import *
 import twseia
+import pprint
+import logging
+
+FORMAT = '[%(levelname)s]: %(message)s'
+logging.getLogger('').handlers = []
+logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+
 
 if __name__ == '__main__':
     # request = twseia.SAInfoRequestPacket.create(sa_info_type=twseia.SARegisterServiceIDEnum.REGISTRATION)
@@ -9,10 +16,8 @@ if __name__ == '__main__':
     # register = twseia.SARegisterPacket.from_pdu(pdu=kPANASONIC_FYTW_08810115_REGISTER_PDU)
     # print(f'{twseia.read_sa_cmd_helps(register=register)}')
 
-    for n in list(twseia.ACServiceIDEnum):
-        arr = n.name.split('_')
-        print(f"""
-class AC{''.join([e.capitalize() for e in arr[:-1]])}Service(Enum16Service):
-    \"\"\"\"\"\"
-    pass
-    """)
+    # pprint.pprint(twseia.AirConditioner.read_spec_cmd_helps())
+    report = twseia.create_write_cmd_from_txt('dehumidifier', 'power', '1')
+    pprint.pprint(report)
+    report = twseia.create_write_cmd_from_txt('dehumidifier', 'power', '0')
+    pprint.pprint(report)

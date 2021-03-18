@@ -297,8 +297,9 @@ class SAStateWriteRequestPacket(_BasePacket):
         packet = cls()
         packet.len = 6
         packet.type_id = type_id
+        packet.io_mode_id = SAServiceIOMode.READ_WRITE.value
         packet.service_id = 0x80 & service_id
-        packet.data_bytes = value.to_bytes(2, 'big')
+        packet.data_bytes = list(value.to_bytes(2, 'big'))
         return packet
 
     def to_pdu(self):

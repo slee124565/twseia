@@ -9,6 +9,8 @@ from .services import Enum16BitService
 from .services import SAServiceBase
 from .services import Enum16Service
 from .services import SACmdHelp
+from .constants import SATypeIDEnum
+
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +49,7 @@ class DHOpTimerService(UInt8Service):
     """運轉時間設定功能"""
     unit = 'Hr'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHOpTimerService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉設定時間功能',
@@ -61,7 +63,7 @@ class DHHumidityCfgService(UInt8Service):
     """相對溼度設定功能"""
     unit = '%'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHHumidityCfgService, self).to_cmd_help()
         _help.update_kwargs_params({
             '非0': '相對溼度設定值（百分比）'
@@ -73,7 +75,7 @@ class DHHumidityCfgService(UInt8Service):
 class DHDehumidifierLevelService(Enum16Service):
     """除濕段數設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHDehumidifierLevelService, self).to_cmd_help()
         _help.update_kwargs_params({
             '0~15': 'n段除濕(0~15段數愈高相對濕度愈高)'
@@ -84,7 +86,7 @@ class DHDehumidifierLevelService(Enum16Service):
 class DHDryClotheLevelService(Enum16Service):
     """乾衣段數設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHDryClotheLevelService, self).to_cmd_help()
         _help.update_kwargs_params({
             '0~15': 'n段乾衣'
@@ -96,7 +98,7 @@ class DHTemperatureService(Int8Service):
     """室內溫度顯示功能, read only"""
     unit = 'ºC'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHTemperatureService, self).to_cmd_help()
         _help.update_kwargs_unit('C')
         return _help
@@ -106,7 +108,7 @@ class DHHumidityService(UInt8Service):
     """室內溼度顯示功能, read only"""
     unit = '%'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHHumidityService, self).to_cmd_help()
         _help.update_kwargs_unit('%')
         return _help
@@ -115,7 +117,7 @@ class DHHumidityService(UInt8Service):
 class DHFanDirectionAutoService(Enum16Service):
     """開關自動風向功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHFanDirectionAutoService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '停止', 1: '開啟'
@@ -126,7 +128,7 @@ class DHFanDirectionAutoService(Enum16Service):
 class DHFanDirectionLevelService(Enum16Service):
     """設定風向段數功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHFanDirectionLevelService, self).to_cmd_help()
         _help.update_kwargs_params({
             '0~15': 'n段角度'
@@ -137,7 +139,7 @@ class DHFanDirectionLevelService(Enum16Service):
 class DHWaterFullAlarmService(Enum16Service):
     """滿水顯示警告功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHWaterFullAlarmService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '正常狀態', 1: '滿水狀態'
@@ -148,7 +150,7 @@ class DHWaterFullAlarmService(Enum16Service):
 class DHFilterCleanNotifyService(Enum16Service):
     """濾網清洗通知功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHFilterCleanNotifyService, self).to_cmd_help()
         _help.update_kwargs_params({
             'READ': {0: '正常', 1: '需清洗髒污'}, 'WRITE': {0: '狀態重置'}
@@ -159,7 +161,7 @@ class DHFilterCleanNotifyService(Enum16Service):
 class DHMoodLedService(Enum16Service):
     """氣氛燈控制功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHMoodLedService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉氣氛燈', 1: '開啟氣氛燈'
@@ -170,7 +172,7 @@ class DHMoodLedService(Enum16Service):
 class DHAirCleanModeService(Enum16Service):
     """空氣清淨模式設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHAirCleanModeService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉空氣清淨功能', 1: '開啟空氣清淨功能或段數1', 'n': 'n段'
@@ -181,7 +183,7 @@ class DHAirCleanModeService(Enum16Service):
 class DHFanLevelService(Enum16Service):
     """風速設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHFanLevelService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '自動', 'n': 'n段風速(1~15段數愈高風速愈強)'
@@ -192,7 +194,7 @@ class DHFanLevelService(Enum16Service):
 class DHSideFanService(Enum16Service):
     """側向出風口功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHSideFanService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '正常狀態(上側出風)', 1: '側向出風狀態'
@@ -203,7 +205,7 @@ class DHSideFanService(Enum16Service):
 class DHAudioService(Enum16Service):
     """聲音設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHAudioService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '靜音', 1: '按鍵聲音', 2: '滿水及按鍵聲音'
@@ -214,7 +216,7 @@ class DHAudioService(Enum16Service):
 class DHDefrostDisplayService(Enum16Service):
     """除霜顯示功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHDefrostDisplayService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '正常狀態', 1: '除霜狀態'
@@ -225,7 +227,7 @@ class DHDefrostDisplayService(Enum16Service):
 class DHDisplayErrService(Enum16BitService):
     """錯誤訊息顯示功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHDisplayErrService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '正常', '非0': '故障訊息碼'
@@ -236,7 +238,7 @@ class DHDisplayErrService(Enum16BitService):
 class DHDevMildewService(Enum16Service):
     """機體防霉功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHDevMildewService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉機體防霉功能', 1: '開啟機體防霉功能'
@@ -247,7 +249,7 @@ class DHDevMildewService(Enum16Service):
 class DHHumidityHighNotifyService(Enum16Service):
     """高濕度提示設定功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHHumidityHighNotifyService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉高濕度提示功能', 1: '開啟高濕度提示功能'
@@ -259,7 +261,7 @@ class DHHumidityHighCfgService(UInt16Service):
     """高濕度值定義設定功能"""
     unit = '%'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHHumidityHighCfgService, self).to_cmd_help()
         _help.update_kwargs_params({
             '0~99': '高濕度提示設定值'
@@ -271,7 +273,7 @@ class DHHumidityHighCfgService(UInt16Service):
 class DHKeypadLockService(Enum16Service):
     """按鍵鎖功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHKeypadLockService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '關閉按鍵鎖定', 1: '開啟按鍵鎖定'
@@ -282,7 +284,7 @@ class DHKeypadLockService(Enum16Service):
 class DHRemoteCtrlLockService(Enum16BitService):
     """有線控制器、無線遙控器禁止功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHRemoteCtrlLockService, self).to_cmd_help()
         _help.update_kwargs_params({
             'BIT 0': '運轉/停止',
@@ -299,7 +301,7 @@ class DHRemoteCtrlLockService(Enum16BitService):
 class DHSaaCtrlAudioService(Enum16Service):
     """SAA控制提示音功能"""
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHSaaCtrlAudioService, self).to_cmd_help()
         _help.update_kwargs_params({
             0: '有聲', 1: '無聲'
@@ -311,7 +313,7 @@ class DHOpCurrentService(Enum16Service):
     """運轉電流"""
     unit = '0.1Amp'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHOpCurrentService, self).to_cmd_help()
         _help.update_kwargs_unit('0.1Amp')
         return _help
@@ -321,7 +323,7 @@ class DHOpVoltageService(UInt16Service):
     """運轉電壓"""
     unit = 'V'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHOpVoltageService, self).to_cmd_help()
         _help.update_kwargs_unit('V')
         return _help
@@ -336,7 +338,7 @@ class DHOpPowerWattService(UInt16Service):
     """即時功率"""
     unit = 'W'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHOpPowerWattService, self).to_cmd_help()
         _help.update_kwargs_unit('W')
         return _help
@@ -346,7 +348,7 @@ class DHTotalWattService(UInt16Service):
     """累積用電量"""
     unit = '0.1kWh'
 
-    def to_cmd_help(self):
+    def to_cmd_help(self) -> SACmdHelp:
         _help = super(DHTotalWattService, self).to_cmd_help()
         _help.update_kwargs_unit('0.1kWh')
         _help.update_kwargs_params({
@@ -419,6 +421,43 @@ class DHServiceIDEnum(enum.IntEnum):
 
 
 class Dehumidifier(SADevice):
+    @classmethod
+    def read_spec_cmd_helps(cls) -> list:
+        import inspect
+        import sys
+        report = []
+        for name, obj in inspect.getmembers(sys.modules[__name__]):
+            if inspect.isclass(obj):
+                if name[:2] == 'DH' and name[-7:] == 'Service':
+                    logger.debug(f'inspect obj {type(obj)}')
+                    assert issubclass(obj, SAServiceBase)
+                    report.append(obj().to_cmd_help().to_json())
+        return report
+
+    @classmethod
+    def read_service_id_list(cls) -> list:
+        return [n.value for n in list(DHServiceIDEnum)]
+
+    @classmethod
+    def read_type_id(cls) -> int:
+        return SATypeIDEnum.DEHUMIDIFIER.value
+
+    @classmethod
+    def read_cmd_list(cls) -> list:
+        return ["_".join(n.name.split("_")[:-1]) for n in list(DHServiceIDEnum)]
+
+    @classmethod
+    def convert_cmd_txt_to_service_id(cls, cmd_txt: str) -> int:
+        cmd_dict = {}
+        for n in list(DHServiceIDEnum):
+            txt = "_".join(n.name.lower().split("_")[:-1])
+            cmd_dict[txt] = n.value
+        logger.debug(f'cmd keys: {cmd_dict.keys()}')
+        if cmd_txt not in cmd_dict.keys():
+            raise ValueError(f'cmd_txt not exist, {cmd_txt}')
+        else:
+            return cmd_dict[cmd_txt]
+
     @classmethod
     def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool = True) -> SAServiceBase:
         if not isinstance(pdu, list) or len(pdu) < 3:
@@ -505,6 +544,8 @@ class Dehumidifier(SADevice):
             _service = SAServiceBase.from_fixed_len_pdu(pdu=pdu)
 
         # _service.name = DHServiceIDEnum(_service.service_id).name
+        arr = DHServiceIDEnum(_service.service_id).name.split('_')
+        _service.cmd_txt = '_'.join([n.lower() for n in arr[:-1]])
         return _service
 
 

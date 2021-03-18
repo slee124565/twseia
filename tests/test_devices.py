@@ -38,7 +38,7 @@ class TestSmartApplication(unittest.TestCase):
             packet = twseia.parsing_sa_register_response(pdu=response)
             self.assertTrue(isinstance(packet, twseia.SARegisterPacket))
             assert isinstance(packet, twseia.SARegisterPacket)
-            logging.info(f'{packet.to_json()}')
+            logging.debug(f'register packet: {packet.to_json()}')
             self.assertTrue(packet.type_id != 0x00)
             self.assertTrue(packet.class_id < 4)
             self.assertTrue(isinstance(packet.brand, str))
@@ -47,6 +47,27 @@ class TestSmartApplication(unittest.TestCase):
             self.assertTrue(isinstance(packet.minor_ver, int))
             self.assertTrue(isinstance(packet.services, list))
             self.assertTrue(len(packet.services) > 0)
+
+    def test_sa_cmd_help_response(self):
+        responses = [
+            kPANASONIC_FYTW_08810115_REGISTER_PDU,
+            kHITACHI_AC_RAD_50NK_REGISTER_PDU,
+            # kHITACHI_AC_RAS_50NF_REGISTER_PDU
+        ]
+        for response in responses:
+            cmd_helps = twseia.parsing_sa_cmd_helps_from_register_response(pdu=response)
+            self.assertTrue(isinstance(cmd_helps, list))
+            for _help in cmd_helps:
+                self.assertTrue(isinstance(_help, dict), f'{type(_help)}')
+                self.assertTrue(isinstance(_help.get('id'), int))
+                self.assertTrue(isinstance(_help.get('txt'), str))
+                self.assertTrue(_help.get('txt') != '')
+                self.assertTrue(_help.get('mode') in ['RW', 'R'])
+                self.assertTrue(isinstance(_help.get('type'), str))
+                self.assertTrue(_help.get('type') != '')
+                if _help.get('params') is not None:
+                    self.assertTrue(isinstance(_help.get('params'), dict))
+                logging.debug(f'{_help}')
 
     def test_parsing_sa_class_id_response(self):
         class_id = twseia.parsing_sa_class_id_response(pdu=kPANASONIC_FYTW_08810115_READ_CLASS_ID_PDU)
@@ -106,7 +127,7 @@ class TestSmartApplication(unittest.TestCase):
         self.assertTrue(isinstance(states, list))
         for state in states:
             self.assertTrue(isinstance(state, dict))
-            self.assertTrue(state.get('name') is not None)
+            self.assertTrue(state.get('description') is not None)
             self.assertTrue(state.get('value') is not None)
             logging.debug(f'state: {state}')
 
@@ -153,38 +174,34 @@ class TestSmartApplication(unittest.TestCase):
             [6, 4, 29, 14, 40, 57]
         ]
         for pdu in states_dataset:
-            logging.debug(f'pdu {pdu}')
             report = twseia.parsing_read_state_response(
                 type_id=twseia.SATypeIDEnum.DEHUMIDIFIER.value,
                 pdu=pdu)
             self.assertTrue(isinstance(report, dict))
-            self.assertTrue(report.get('name') is not None)
+            self.assertTrue(report.get('description') is not None)
             self.assertTrue(report.get('value') is not None)
             logging.debug(f'{report}')
 
-    # def test_create_write_state_cmd(self):
-    #     pass
-    #
+    def test_create_write_state_cmd(self):
+        for sa_dev_cls in [twseia.Dehumidifier, twseia.AirConditioner]:
+            for cmd_txt in sa_dev_cls.read_cmd_list():
+                test_value = 0x0F
+                pdu = twseia.create_write_state_cmd_from_txt(
+                    type_id=sa_dev_cls.read_type_id(),
+                    cmd_txt=cmd_txt,
+                    cmd_value=test_value
+                )
+                self.assertTrue(pdu[0] == len(pdu), f'{pdu}')
+                self.assertTrue(pdu[1] == sa_dev_cls.read_type_id(), f'{pdu}')
+                self.assertTrue((pdu[2] >> 7) == 1, f'{pdu}')
+                _id = pdu[2] & 0x7f
+                self.assertTrue(_id in sa_dev_cls.read_service_id_list())
+                _value = int.from_bytes(pdu[3:5], 'big')
+                self.assertTrue(_value == test_value, f'{pdu}')
+                self.assertTrue(pdu[-1] == twseia.compute_pdu_checksum(pdu[:-1]))
+
     # def test_parsing_write_state_response(self):
     #     pass
-
-
-class TestAirConditioner(unittest.TestCase):
-
-    def test_interface_implementation(self):
-        pdu = kHITACHI_AC_RAD_50NK_REGISTER_PDU
-        packet = twseia.SARegisterPacket.from_pdu(pdu=pdu)
-        self.assertTrue(isinstance(packet, twseia.SARegisterPacket))
-        # pdu = kHITACHI_AC_RAS_50NF_REGISTER_PDU
-        # packet = twseia.SAInfoRegisterPacket.from_pdu(pdu=pdu)
-        # self.assertTrue(isinstance(packet, twseia.SAInfoRegisterPacket))
-
-
-class TestDehumidifier(unittest.TestCase):
-    def test_interface_implementation(self):
-        pdu = kPANASONIC_FYTW_08810115_REGISTER_PDU
-        packet = twseia.SARegisterPacket.from_pdu(pdu=pdu)
-        self.assertTrue(isinstance(packet, twseia.SARegisterPacket))
 
 
 if __name__ == '__main__':
