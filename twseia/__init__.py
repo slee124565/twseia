@@ -189,7 +189,7 @@ def parsing_read_state_response(type_id: int, pdu: list, is_fixed_len_pdu: bool 
     else:
         raise NotImplementedError
 
-    assert isinstance(dev_cls, SADevice)
+    assert issubclass(dev_cls, SADevice)
     packet = SAStateReadResponsePacket.from_pdu(pdu=pdu)
     if packet.type_id != type_id:
         raise ValueError(f'pdu type_id invalid, {pdu}')

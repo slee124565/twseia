@@ -673,13 +673,14 @@ class AirConditioner(SADevice):
     @classmethod
     def convert_cmd_txt_to_service_id(cls, cmd_txt: str) -> int:
         cmd_dict = {}
+        _cmd = cmd_txt.lower()
         for n in list(ACServiceIDEnum):
             txt = "_".join(n.name.lower().split("_")[:-1])
             cmd_dict[txt] = n.value
-        if cmd_txt not in cmd_dict.keys():
+        if _cmd not in cmd_dict.keys():
             raise ValueError(f'cmd_txt not exist, {cmd_txt}')
         else:
-            return cmd_dict[cmd_txt]
+            return cmd_dict[_cmd]
 
     @classmethod
     def convert_dev_specific_service(cls, pdu: list, is_fixed_len_pdu: bool) -> SAServiceBase:
