@@ -48,7 +48,7 @@ class TestSmartApplication(unittest.TestCase):
             self.assertTrue(isinstance(packet.services, list))
             self.assertTrue(len(packet.services) > 0)
 
-    def test_sa_cmd_help_response(self):
+    def test_read_sa_cmd_helps_from_register_response(self):
         responses = [
             kPANASONIC_FYTW_08810115_REGISTER_PDU,
             kHITACHI_AC_RAD_50NK_REGISTER_PDU,
