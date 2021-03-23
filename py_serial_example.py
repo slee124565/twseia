@@ -106,7 +106,7 @@ it waits for the next connect.
     ser.write(bytearray(read_cmd))
     buffer = []
     while True:
-        recv = ser.read(1024)
+        recv = ser.read()
         buffer += list(recv)
         if 0 < len(buffer) == buffer[0]:
             break
@@ -120,15 +120,17 @@ it waits for the next connect.
     write_cmd = twseia.create_write_state_cmd_from_txt(
         SA_TYPE_ID, 'power', cmd_value
     )
+    sys.stderr.write('write dev power state {}\n'.format(
+        'ON' if cmd_value == POWER_ON else 'OFF'
+    ))
     ser.write(bytearray(write_cmd))
     buffer = []
     while True:
-        recv = ser.read(1024)
+        recv = ser.read()
         buffer += list(recv)
         if 0 < len(buffer) == buffer[0]:
             break
     response = twseia.parsing_read_state_response(SA_TYPE_ID, buffer)
-    if cmd_value == response.get('value'):
-        sys.stderr.write('write power cmd success')
-    else:
-        sys.stderr.write('write power cmd fail')
+    sys.stderr.write('dev report power state {}\n'.format(
+        'ON' if response.get('value') == POWER_ON else 'OFF'
+    ))
