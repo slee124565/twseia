@@ -16,7 +16,7 @@ SUPPORT_SA_TYPE_ID_LIST = [
 
 
 def read_sa_type_id_dict() -> dict:
-    """Read TaiSEIA Smart Application (SA) device type name and ID from twseia library."""
+    """Read TaiSEIA Smart Application (SA) device type name and ID mapping dict."""
     dev_type_id_dict = {}
     for n in list(SATypeIDEnum):
         dev_type_id_dict[n.name] = n.value

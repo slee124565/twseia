@@ -74,6 +74,7 @@ Simple read and switch TaiSEIA device power ON/OFF state.::
 Web resources
 -------------
 
+* Taiwan Smart Energy Industry Association (TaiSEIA): http://www.taiseia.org.tw/
 * **Documentation**: https://twseia.readthedocs.io/
 * Source code on **GitHub**: https://github.com/slee124565/twseia
 * Python package index (PyPI) with download: https://pypi.org/project/twseia/
