@@ -17,7 +17,4 @@ if __name__ == '__main__':
     # print(f'{twseia.read_sa_cmd_helps(register=register)}')
 
     # pprint.pprint(twseia.AirConditioner.read_spec_cmd_helps())
-    report = twseia.create_write_cmd_from_txt('dehumidifier', 'power', '1')
-    pprint.pprint(report)
-    report = twseia.create_write_cmd_from_txt('dehumidifier', 'power', '0')
-    pprint.pprint(report)
+    pass

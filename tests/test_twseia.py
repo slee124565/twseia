@@ -8,7 +8,7 @@ logging.getLogger('').handlers = []
 logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 
-class TestSmartApplication(unittest.TestCase):
+class TestTwseiaLib(unittest.TestCase):
 
     def test_create_register_cmd(self):
         register = twseia.create_sa_register_cmd()
@@ -55,7 +55,7 @@ class TestSmartApplication(unittest.TestCase):
             # kHITACHI_AC_RAS_50NF_REGISTER_PDU
         ]
         for response in responses:
-            cmd_helps = twseia.parsing_sa_cmd_helps_from_register_response(pdu=response)
+            cmd_helps = twseia.read_sa_cmd_helps_from_register_response(pdu=response)
             self.assertTrue(isinstance(cmd_helps, list))
             for _help in cmd_helps:
                 self.assertTrue(isinstance(_help, dict), f'{type(_help)}')
@@ -102,8 +102,9 @@ class TestSmartApplication(unittest.TestCase):
         self.assertEqual(model, 'FYTW-05760121')
         logging.debug(f'model {model}')
 
-    def test_parsing_dehumidifier_services_response(self):
-        services = twseia.parsing_dehumidifier_services_response(
+    def test_parsing_sa_services_response(self):
+        services = twseia.parsing_sa_services_response(
+            type_id=twseia.SATypeIDEnum.DEHUMIDIFIER.value,
             pdu=kPANASONIC_FYTW_08810115_SERVICES_PDU,
             is_fixed_len_pdu=True
         )
@@ -119,8 +120,9 @@ class TestSmartApplication(unittest.TestCase):
                 self.assertTrue(service.get('unit') is not None)
             logging.debug(f'service: {service}')
 
-    def test_parsing_dehumidifier_all_states_response(self):
-        states = twseia.parsing_dehumidifier_all_states_response(
+    def test_parsing_sa_all_states_response(self):
+        states = twseia.parsing_sa_all_states_response(
+            type_id=twseia.SATypeIDEnum.DEHUMIDIFIER.value,
             pdu=kPANASONIC_FYTW_08810115_ALL_STATES_PDU,
             is_fixed_len_pdu=True
         )
@@ -130,14 +132,6 @@ class TestSmartApplication(unittest.TestCase):
             self.assertTrue(state.get('description') is not None)
             self.assertTrue(state.get('value') is not None)
             logging.debug(f'state: {state}')
-
-    def test_parsing_air_conditioner_services_response(self):
-        # todo
-        pass
-
-    def test_parsing_air_conditioner_states_response(self):
-        # todo
-        pass
 
     def test_create_read_state_cmd(self):
         register = twseia.SARegisterPacket.from_pdu(pdu=kPANASONIC_FYTW_08810115_REGISTER_PDU)

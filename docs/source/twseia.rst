@@ -10,7 +10,19 @@ Submodules
 ----------
 
 
+.. automodule:: twseia.air_conditioner
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 .. automodule:: twseia.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+.. automodule:: twseia.dehumidifier
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,13 +40,13 @@ Submodules
    :show-inheritance:
 
 
-.. automodule:: twseia.services
+.. automodule:: twseia.sa_txt_cmd
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-.. automodule:: twseia.smart_application
+.. automodule:: twseia.services
    :members:
    :undoc-members:
    :show-inheritance:
