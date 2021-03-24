@@ -14,6 +14,10 @@ TWSEIA
 .. image:: https://img.shields.io/pypi/v/twseia.svg
    :target: https://pypi.org/project/twseia
 
+
+.. image:: https://img.shields.io/readthedocs/twseia
+   :target: https://twseia.readthedocs.io/
+
 A Taiwan Smart Energy Industry Association (TaiSEIA) Protocol Python Library.
 
 Example
