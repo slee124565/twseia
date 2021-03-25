@@ -219,14 +219,28 @@ it waits for the next connect.
                         if not data:
                             break
                         # ser.write(data)
+                        import twseia
+
                         sys.stderr.write(f'net data: {data}, {len(data)}\n')
                         txt_cmd = data.decode('utf-8').replace('\r', '').replace('\n', '')
+                        txt_args = txt_cmd.split(',')
                         if txt_cmd.lower() == 'exit':
                             break
-                        if txt_cmd.find('0x') >= 0:
-                            ser.write(bytearray([int(n, 16) for n in txt_cmd.split(',')]))
+                        if txt_args[0].lower() == 'register':
+                            ser.write(bytearray(twseia.create_sa_register_cmd()))
+                        elif txt_args[0].lower() == 'states':
+                            ser.write(bytearray(twseia.create_read_all_states_cmd()))
+                        # elif txt_args[0].lower() == 'help':
+                        #     pass
                         else:
-                            ser.write(bytearray([int(n) for n in txt_cmd.split(',')]))
+                            if len(txt_args) == 6:
+                                if txt_cmd.find('0x') == 0:
+                                    ser.write(bytearray([int(n, 16) for n in txt_cmd.split(',')]))
+                                else:
+                                    ser.write(bytearray([int(n) for n in txt_cmd.split(',')]))
+                            else:
+                                client_socket.sendall(bytearray(f'cmd {txt_cmd} not support.'))
+
                     except socket.error as msg:
                         if args.develop:
                             raise
