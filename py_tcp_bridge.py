@@ -11,17 +11,17 @@ import socket
 # import serial
 import serial.threaded
 import time
-
-
-# import struct
+import twseia
 
 
 class SerialToNet(serial.threaded.Protocol):
     """serial->socket"""
-    buffer = []
 
     def __init__(self):
         self.socket = None
+        self.buffer = []
+        self.cmd_sent = None
+        self.sa_type_id = None
 
     def __call__(self):
         return self
@@ -35,8 +35,17 @@ class SerialToNet(serial.threaded.Protocol):
                 sys.stderr.write(f'buffer {self.buffer}\n')
                 response = ', '.join([f'{n}' for n in self.buffer]) + '\n'
                 sys.stderr.write(f'{response}\n')
-                self.socket.sendall(response.encode('utf-8'))
+                if self.cmd_sent == 'register':
+                    self.socket.sendall(twseia.parsing_sa_register_response(
+                        self.buffer).to_json())
+                elif self.cmd_sent == 'states':
+                    self.socket.sendall(twseia.parsing_sa_all_states_response(
+                        self.sa_type_id, self.buffer))
+                else:
+                    self.socket.sendall(response.encode('utf-8'))
+
                 self.buffer = []
+                self.cmd_sent = None
             else:
                 # sys.stderr.write(f'... recv_s_data {data_bytes}, buffer len {len(self.buffer)}\n')
                 pass
@@ -54,6 +63,11 @@ to this service over the network.
 Only one connection at once is supported. When the connection is terminated
 it waits for the next connect.
 """)
+
+    parser.add_argument(
+        'SA_TYPE_ID',
+        type=int,
+        help="TaiSEIA device type ID")
 
     parser.add_argument(
         'SERIALPORT',
@@ -219,7 +233,6 @@ it waits for the next connect.
                         if not data:
                             break
                         # ser.write(data)
-                        import twseia
 
                         sys.stderr.write(f'net data: {data}, {len(data)}\n')
                         txt_cmd = data.decode('utf-8').replace('\r', '').replace('\n', '')
@@ -227,13 +240,16 @@ it waits for the next connect.
                         if txt_cmd.lower() == 'exit':
                             break
                         if txt_args[0].lower() == 'register':
+                            ser_to_net.cmd_sent = 'register'
                             ser.write(bytearray(twseia.create_sa_register_cmd()))
                         elif txt_args[0].lower() == 'states':
+                            ser_to_net.cmd_sent = 'states'
                             ser.write(bytearray(twseia.create_read_all_states_cmd()))
                         # elif txt_args[0].lower() == 'help':
                         #     pass
                         else:
                             if len(txt_args) == 6:
+                                ser_to_net.cmd_sent = 'bytearray'
                                 if txt_cmd.find('0x') == 0:
                                     ser.write(bytearray([int(n, 16) for n in txt_cmd.split(',')]))
                                 else:
